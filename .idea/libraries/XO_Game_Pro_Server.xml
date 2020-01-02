@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="XO-Game-Pro-Server">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/dist/XO-Game-Pro-Server.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
