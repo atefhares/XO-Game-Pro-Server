@@ -37,7 +37,6 @@
     
     
     <!-- Check system and JDK version -->
-<<<<<<< HEAD
     
     <macrodef name="target-on-another-jvm">
         <attribute name="target" default="${ant.project.invoked-targets}" />
@@ -69,8 +68,6 @@
             </and>
         </condition>
     </target>
-=======
->>>>>>> Mohamed_Abouserei
 
     <target name="-check-operating-system">
         <condition property="running.on.mac">
@@ -573,7 +570,6 @@
                 <available file="${javafx.runtime}${file.separator}lib${file.separator}ext${file.separator}jfxrt.jar"/>
             </and>
         </condition>
-<<<<<<< HEAD
         <condition property="do.set.jfxrt.in.fxrt.mods">
             <and>
                 <not><isset property="jfxrt.jar.location"/></not>
@@ -585,8 +581,6 @@
                 </or>
             </and>
         </condition>
-=======
->>>>>>> Mohamed_Abouserei
     </target>
     <target name="-set-jfxrt-in-fxrt-old" depends="-check-jfxrt-in-fxrt" if="do.set.jfxrt.in.fxrt.old">
         <property name="jfxrt.jar.location" value="${javafx.runtime}${file.separator}lib${file.separator}jfxrt.jar"/>
@@ -594,12 +588,9 @@
     <target name="-set-jfxrt-in-fxrt-new" depends="-set-jfxrt-in-fxrt-old,-check-jfxrt-in-fxrt" if="do.set.jfxrt.in.fxrt.new">
         <property name="jfxrt.jar.location" value="${javafx.runtime}${file.separator}lib${file.separator}ext${file.separator}jfxrt.jar"/>
     </target>
-<<<<<<< HEAD
     <target name="-set-jfxrt-in-fxrt-mods" depends="-set-jfxrt-in-fxrt-new" if="do.set.jfxrt.in.fxrt.mods">
         <property name="jfxrt.jar.location" value=""/>
     </target>
-=======
->>>>>>> Mohamed_Abouserei
     <target name="-check-jfxrt-in-fxsdk-jre" depends="-check-property-javafx.sdk" if="javafx.sdk.defined">
         <condition property="do.set.jfxrt.in.fxsdk.jre.old">
             <and>
@@ -615,11 +606,7 @@
             </and>
         </condition>
     </target>
-<<<<<<< HEAD
     <target name="-set-jfxrt-in-fxsdk-jre-old" depends="-set-jfxrt-in-fxrt-mods,-check-jfxrt-in-fxsdk-jre" if="do.set.jfxrt.in.fxsdk.jre.old">
-=======
-    <target name="-set-jfxrt-in-fxsdk-jre-old" depends="-set-jfxrt-in-fxrt-new,-check-jfxrt-in-fxsdk-jre" if="do.set.jfxrt.in.fxsdk.jre.old">
->>>>>>> Mohamed_Abouserei
         <property name="jfxrt.jar.location" value="${javafx.sdk}${file.separator}jre${file.separator}lib${file.separator}jfxrt.jar"/>
     </target>
     <target name="-set-jfxrt-in-fxsdk-jre-new" depends="-set-jfxrt-in-fxsdk-jre-old,-check-jfxrt-in-fxsdk-jre" if="do.set.jfxrt.in.fxsdk.jre.new">
@@ -688,7 +675,6 @@
     <target name="-set-jfxrt-in-platform-home-rt-new" depends="-set-jfxrt-in-platform-home-rt-old,-check-jfxrt-in-platform-home-rt" if="do.set.jfxrt.in.platform.home.rt.new">
         <property name="jfxrt.jar.location" value="${platform.home}${file.separator}rt${file.separator}lib${file.separator}ext${file.separator}jfxrt.jar"/>
     </target>
-<<<<<<< HEAD
     <target name="-check-jfxrt-modules-in-platform-home" if="platform.home">
         <condition property="do.set.jfxrt.in.platform.home.mods">
             <and>
@@ -705,8 +691,6 @@
     <target name="-set-jfxrt-modules-in-platform-home" depends="-set-jfxrt-in-platform-home-rt-new,-check-jfxrt-modules-in-platform-home" if="do.set.jfxrt.in.platform.home.mods">
         <property name="jfxrt.jar.location" value=""/>
     </target>
-=======
->>>>>>> Mohamed_Abouserei
     <target name="-check-jfxrt-in-jre" unless="jfxrt.jar.location">
         <condition property="do.set.jfxrt.in.jre.old">
             <and>
@@ -721,7 +705,6 @@
                 <available file="${java.home}${file.separator}lib${file.separator}ext${file.separator}jfxrt.jar"/>
             </and>
         </condition>
-<<<<<<< HEAD
         <condition property="do.set.jfxrt.in.jre.mods">
             <and>
                 <not><isset property="do.set.jfxrt.in.jre.old"/></not>
@@ -735,21 +718,14 @@
         </condition>
     </target>
     <target name="-set-jfxrt-in-jre-old" depends="-set-jfxrt-modules-in-platform-home,-check-jfxrt-in-jre" if="do.set.jfxrt.in.jre.old">
-=======
-    </target>
-    <target name="-set-jfxrt-in-jre-old" depends="-set-jfxrt-in-platform-home-rt-new,-check-jfxrt-in-jre" if="do.set.jfxrt.in.jre.old">
->>>>>>> Mohamed_Abouserei
         <property name="jfxrt.jar.location" value="${java.home}${file.separator}lib${file.separator}jfxrt.jar"/>
     </target>
     <target name="-set-jfxrt-in-jre-new" depends="-set-jfxrt-in-jre-old,-check-jfxrt-in-jre" if="do.set.jfxrt.in.jre.new">
         <property name="jfxrt.jar.location" value="${java.home}${file.separator}lib${file.separator}ext${file.separator}jfxrt.jar"/>
     </target>
-<<<<<<< HEAD
     <target name="-set-jfxrt-in-jre-mods" depends="-set-jfxrt-in-jre-new,-check-jfxrt-in-jre" if="do.set.jfxrt.in.jre.mods">
         <property name="jfxrt.jar.location" value=""/>
     </target>
-=======
->>>>>>> Mohamed_Abouserei
     <target name="-check-jfxrt-in-envjdk-jre" unless="jfxrt.jar.location">
         <property environment="env"/>
         <condition property="do.set.jfxrt.in.envjdk.jre.old">
@@ -766,17 +742,12 @@
             </and>
         </condition>
     </target>
-<<<<<<< HEAD
     <target name="-set-jfxrt-in-envjdk-jre-old" depends="-set-jfxrt-in-jre-mods,-check-jfxrt-in-envjdk-jre" if="do.set.jfxrt.in.envjdk.jre.old">
-=======
-    <target name="-set-jfxrt-in-envjdk-jre-old" depends="-set-jfxrt-in-jre-new,-check-jfxrt-in-envjdk-jre" if="do.set.jfxrt.in.envjdk.jre.old">
->>>>>>> Mohamed_Abouserei
         <property name="jfxrt.jar.location" value="${env.JAVA_HOME}${file.separator}jre${file.separator}lib${file.separator}jfxrt.jar"/>
     </target>
     <target name="-set-jfxrt-in-envjdk-jre-new" depends="-set-jfxrt-in-envjdk-jre-old,-check-jfxrt-in-envjdk-jre" if="do.set.jfxrt.in.envjdk.jre.new">
         <property name="jfxrt.jar.location" value="${env.JAVA_HOME}${file.separator}jre${file.separator}lib${file.separator}ext${file.separator}jfxrt.jar"/>
     </target>
-<<<<<<< HEAD
     <target name="-check-jfxrt-modules-in-envjdk" unless="jfxrt.jar.location">
         <condition property="do.set.jfxrt.in.envjdk.mods">
             <and>
@@ -793,9 +764,6 @@
         <property name="jfxrt.jar.location" value=""/>
     </target>
     <target name="-pre-check-jfx-runtime" depends="-set-jfxrt-modules-in-envjdk">
-=======
-    <target name="-pre-check-jfx-runtime" depends="-set-jfxrt-in-envjdk-jre-new">
->>>>>>> Mohamed_Abouserei
         <echo message="jfxrt.jar.location = ${jfxrt.jar.location}" level="verbose"/>
     </target>
 
@@ -805,10 +773,7 @@
                 <or>
                     <isset property="do.set.jfxrt.in.fxrt.old"/>
                     <isset property="do.set.jfxrt.in.fxrt.new"/>
-<<<<<<< HEAD
                     <isset property="do.set.jfxrt.in.fxrt.mods"/>
-=======
->>>>>>> Mohamed_Abouserei
                     <isset property="do.set.jfxrt.in.fxsdk.jre.old"/>
                     <isset property="do.set.jfxrt.in.fxsdk.jre.new"/>
                     <isset property="do.set.jfxrt.in.fxsdk.rt.old"/>
@@ -817,7 +782,6 @@
                     <isset property="do.set.jfxrt.in.platform.home.jre.new"/>
                     <isset property="do.set.jfxrt.in.platform.home.rt.old"/>
                     <isset property="do.set.jfxrt.in.platform.home.rt.new"/>
-<<<<<<< HEAD
                     <isset property="do.set.jfxrt.in.platform.home.mods"/>
                     <isset property="do.set.jfxrt.in.jre.old"/>
                     <isset property="do.set.jfxrt.in.jre.new"/>
@@ -825,12 +789,6 @@
                     <isset property="do.set.jfxrt.in.envjdk.jre.old"/>
                     <isset property="do.set.jfxrt.in.envjdk.jre.new"/>
                     <isset property="do.set.jfxrt.in.envjdk.mods"/>
-=======
-                    <isset property="do.set.jfxrt.in.jre.old"/>
-                    <isset property="do.set.jfxrt.in.jre.new"/>
-                    <isset property="do.set.jfxrt.in.envjdk.jre.old"/>
-                    <isset property="do.set.jfxrt.in.envjdk.jre.new"/>
->>>>>>> Mohamed_Abouserei
                 </or>
                 <isset property="jfxrt.jar.location"/>
             </and>
@@ -1879,13 +1837,9 @@
                     var fallback = new String(project.getProperty("javafx.fallback.class"));
                     app.setName(title);
                     app.setMainClass(mainclass);
-<<<<<<< HEAD
                     if (typeof(app['fallbackClass']) === 'function') {
                         app.setFallbackClass(fallback);
                     }
-=======
-                    app.setFallbackClass(fallback);
->>>>>>> Mohamed_Abouserei
                     if(isTrue(withpreloader)) {
                         preloaderclass = new String(project.getProperty("javafx.preloader.class"));
                         app.setPreloaderClass(preloaderclass);
@@ -2329,12 +2283,8 @@
                     var embedJNLP = new String(project.getProperty("javafx.deploy.embedJNLP"));
                     var updatemode = new String(project.getProperty("update-mode"));
                     var outfile = new String(project.getProperty("application.title"));
-<<<<<<< HEAD
                     //var includeDT = new String(project.getProperty("javafx.deploy.includeDT"));
                     var includeDT = new String(project.getProperty("jfx.deployment.includeDT"));
-=======
-                    var includeDT = new String(project.getProperty("javafx.deploy.includeDT"));
->>>>>>> Mohamed_Abouserei
                     var offline = new String(project.getProperty("javafx.deploy.allowoffline"));
                     if (width.indexOf("%") != -1) {
                         deploy.setEmbeddedWidth(width);
@@ -2393,13 +2343,9 @@
                     var fallback = new String(project.getProperty("javafx.fallback.class"));
                     app.setName(title);
                     app.setMainClass(mainclass);
-<<<<<<< HEAD
                     if (typeof(app['fallbackClass']) === 'function') {
                         app.setFallbackClass(fallback);
                     }
-=======
-                    app.setFallbackClass(fallback);
->>>>>>> Mohamed_Abouserei
                     if(isTrue(withpreloader)) {
                         preloaderclass = new String(project.getProperty("javafx.preloader.class"));
                         app.setPreloaderClass(preloaderclass);
@@ -2877,12 +2823,7 @@
             <echo message="Warning: Parameters (if any) not passed to &lt;fx:application&gt; in fallback build mode due to JDK missing JavaScript support."/>
             <fx:application id="fxApp"
                 name="${application.title}"
-<<<<<<< HEAD
                 mainClass="${javafx.main.class}">
-=======
-                mainClass="${javafx.main.class}"
-                fallbackClass="${javafx.fallback.class}">
->>>>>>> Mohamed_Abouserei
                 <!-- PARAMETERS NOT PASSED IN FALLBACK -->
             </fx:application>
         </sequential>
@@ -2894,12 +2835,7 @@
             <fx:application id="fxApp"
                 name="${application.title}"
                 mainClass="${javafx.main.class}"
-<<<<<<< HEAD
                 preloaderClass="${javafx.preloader.class}">
-=======
-                preloaderClass="${javafx.preloader.class}"
-                fallbackClass="${javafx.fallback.class}">
->>>>>>> Mohamed_Abouserei
                 <!-- PARAMETERS NOT PASSED IN FALLBACK -->
             </fx:application>
         </sequential>
@@ -2911,10 +2847,6 @@
             <fx:application id="fxApp"
                 name="${application.title}"
                 mainClass="${main.class}"
-<<<<<<< HEAD
-=======
-                fallbackClass="${javafx.fallback.class}"
->>>>>>> Mohamed_Abouserei
                 toolkit="swing">
                 <!-- PARAMETERS NOT PASSED IN FALLBACK -->
             </fx:application>
@@ -3606,7 +3538,6 @@
 
     <!-- Project Build Targets -->
 
-<<<<<<< HEAD
     <target name="jfx-build">
         <antcall target="-build-on-another-platform" />
         <antcall target="-build-on-same-platform" />
@@ -3619,12 +3550,6 @@
         <antcall target="-rebuild-on-same-platform" />
     </target>
     <target name="jfx-project-rebuild" depends=" clean, -jfx-do-compile, -jfx-do-jar, -jfx-do-post-jar"/>
-=======
-    <target name="jfx-build" depends="-jfx-do-compile, -jfx-do-jar, -jfx-do-post-jar"/>
-    <target name="jfx-build-noscript" depends="-set-fallback-no-javascript, -jfx-do-compile, -jfx-do-jar, -jfx-do-post-jar"/>
-    
-    <target name="jfx-rebuild" depends="clean, -jfx-do-compile, -jfx-do-jar, -jfx-do-post-jar"/>
->>>>>>> Mohamed_Abouserei
     <target name="jfx-rebuild-noscript" depends="-set-fallback-no-javascript, clean, -jfx-do-compile, -jfx-do-jar, -jfx-do-post-jar"/>
 
     <target name="jfx-build-native" depends="-set-do-build-native-package, -check-ant-jre-supports-native-packaging, -check-native-packager-external-tools, jfx-rebuild"/>
@@ -3639,7 +3564,6 @@
         <antcall target="jfx-build-native-noscript"/>
     </target>
     
-<<<<<<< HEAD
     <target name="-build-on-another-platform" depends="-check-ant-vs-platform-jvm" if="ant-java-version-different-from-plaform-java">
         <target-on-another-jvm target="jfx-project-build"/> 
     </target>
@@ -3654,8 +3578,6 @@
         <antcall target="jfx-project-rebuild" />
     </target>
     
-=======
->>>>>>> Mohamed_Abouserei
     <target name="-check-do-jar">
         <condition property="do-jar-false">
             <and>
@@ -3907,22 +3829,13 @@
         </java>
         <antcall target="-remove-temp-run-dir"/>
     </target>
-<<<<<<< HEAD
     <target name="jfx-project-debug">
-=======
-    <target depends="init,compile,jar,-create-temp-run-dir,-debug-start-debugger" description="Debug JavaFX project standalone." name="jfx-project-debug">
->>>>>>> Mohamed_Abouserei
         <echo message="Executing ${temp.run.jar} using platform ${platform.java}"/>
         <property name="run.jvmargs" value=""/>
         <property name="run.jvmargs.ide" value=""/>        
         <java jar="${temp.run.jar}" dir="${work.dir}" fork="true" jvm="${platform.java}">
             <jvmarg line="${endorsed.classpath.cmd.line.arg}"/>
-<<<<<<< HEAD
             <jvmarg value="-agentlib:jdwp=transport=${debug-transport},address=${jpda.address}"/>
-=======
-            <jvmarg line="${debug-args-line}"/>
-            <jvmarg value="-Xrunjdwp:transport=${debug-transport},address=${jpda.address}"/>
->>>>>>> Mohamed_Abouserei
             <jvmarg value="-Dglass.disableGrab=true"/>
             <jvmarg value="-Dfile.encoding=${runtime.encoding}"/>
             <redirector errorencoding="${runtime.encoding}" inputencoding="${runtime.encoding}" outputencoding="${runtime.encoding}"/>
@@ -3939,7 +3852,6 @@
         </java>
         <antcall target="-remove-temp-run-dir"/>
     </target>
-<<<<<<< HEAD
     <target depends="init,compile,jar,-create-temp-run-dir,-debug-start-debugger" description="Debug JavaFX project standalone." name="jfx-project-debug-on-same-platform">
         <antcall target="jfx-project-debug"/>
     </target>
@@ -3961,16 +3873,6 @@
         <antcall target="-debug-on-another-platform" />
         <antcall target="-debug-on-same-platform" />
     </target>
-=======
-
-
-    <!-- Running/Debugging/Profiling Standalone -->
-
-    <target name="jfxsa-run" depends="-mark-project-state-running,-clean-if-config-changed,-check-jfx-runtime,-warn-of-preloader,jfx-project-run"/>
-    <target name="jfxsa-run-noscript" depends="-set-fallback-no-javascript, jfxsa-run"/>
-
-    <target name="jfxsa-debug" depends="-mark-project-state-debugging,-clean-if-config-changed,jar,-check-jfx-runtime,-warn-of-preloader,jfx-project-debug"/>
->>>>>>> Mohamed_Abouserei
     <target name="jfxsa-debug-noscript" depends="-set-fallback-no-javascript, jfxsa-debug"/>
     
     <target name="jfxsa-profile" depends="-mark-project-state-profiling,-check-jfx-runtime,-warn-of-preloader,jfx-project-profile"/>
@@ -3995,7 +3897,6 @@
         <antcall target="clean"/>
     </target>
     
-<<<<<<< HEAD
     <target name="-run-on-another-platform" depends="-check-ant-vs-platform-jvm" if="ant-java-version-different-from-plaform-java">
         <target-on-another-jvm target="jfxsa-run-no-another-jvm"/> 
     </target>
@@ -4029,31 +3930,11 @@
     </target>
     <target name="-profile-on-same-platform" depends="-check-ant-vs-platform-jvm" unless="ant-java-version-different-from-plaform-java">
        <antcall target="jfxsa-run-no-another-jvm"/>
-=======
-    <target depends="-profile-check-1,-profile-pre72" description="Profile a project in the IDE." if="profiler.configured" name="jfx-project-profile" unless="profiler.info.jvmargs.agent">
-        <startprofiler/>
-        <antcall target="jfxsa-run"/>
->>>>>>> Mohamed_Abouserei
     </target>
 
     <!-- Shared Debugging init -->
 
     <target name="-init-debug-args">
-<<<<<<< HEAD
-=======
-        <property name="version-output" value="java version &quot;${ant.java.version}"/>
-        <condition property="have-jdk-older-than-1.4">
-            <or>
-                <contains string="${version-output}" substring="java version &quot;1.0"/>
-                <contains string="${version-output}" substring="java version &quot;1.1"/>
-                <contains string="${version-output}" substring="java version &quot;1.2"/>
-                <contains string="${version-output}" substring="java version &quot;1.3"/>
-            </or>
-        </condition>
-        <condition else="-Xdebug" property="debug-args-line" value="-Xdebug -Xnoagent -Djava.compiler=none">
-            <istrue value="${have-jdk-older-than-1.4}"/>
-        </condition>
->>>>>>> Mohamed_Abouserei
         <condition else="dt_socket" property="debug-transport-by-os" value="dt_shmem">
             <os family="windows"/>
         </condition>
@@ -4125,11 +4006,7 @@
     <target name="-debug-javaws-debuggee" depends="-init-debug-args">
         <echo message="Executing ${jfx.deployment.jnlp} in debug mode using ${active.webstart.executable}"/>
         <exec executable="${active.webstart.executable}">
-<<<<<<< HEAD
             <env key="JAVAWS_VM_ARGS" value="-agentlib:jdwp=transport=${debug-transport},address=${jpda.address} -Dglass.disableGrab=true"/>
-=======
-            <env key="JAVAWS_VM_ARGS" value="${debug-args-line} -Xrunjdwp:transport=${debug-transport},address=${jpda.address} -Dglass.disableGrab=true"/>
->>>>>>> Mohamed_Abouserei
             <arg value="-wait"/>
             <arg file="${jfx.deployment.jnlp}"/>
         </exec>
