@@ -1,15 +1,13 @@
 package com.itijavafinalprojectteam8.controller;
 
-import com.itijavafinalprojectteam8.model.GamePlay;
-import com.itijavafinalprojectteam8.model.HostClient;
-import com.itijavafinalprojectteam8.model.JoinerClient;
-import jdk.nashorn.internal.parser.JSONParser;
+
+import com.itijavafinalprojectteam8.controller.JsonOperations.JsonParser;
+import com.itijavafinalprojectteam8.others.Constants;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Vector;
 
 /**
  * GameServer contains all server related operations
@@ -21,8 +19,6 @@ public class GameServer {
     public static final int SERVER_PORT = 8000;
     private static ServerSocket mGameConnectionsSocket;
     private static Thread mMainServiceThread;
-
-    private static Vector<GamePlay> allGamePlays = new Vector<>();
 
     public static void startServer() {
         if (mGameConnectionsSocket != null && !mGameConnectionsSocket.isClosed()) {
@@ -72,56 +68,30 @@ public class GameServer {
             }
         });
 
+        mMainServiceThread.start();
+
     }
 
     private static void handleClient(Socket clientSocket) throws IOException {
         DataInputStream dataInputStream = new DataInputStream(clientSocket.getInputStream());
-        String connectionArg = dataInputStream.readUTF();
+        String connectionJsonArg = dataInputStream.readUTF();
+        String requestType = JsonParser.getRequestType(connectionJsonArg);
+        switch (requestType){
+            case Constants.ConnectionTypes.TYPE_SIGN_IN:
+                handleSignInRequest(clientSocket, connectionJsonArg);
+                break;
 
-        // check connection type  if connecting after
-        // SignUp or after SignIn
-        // if SignUP
-
-
-//        boolean isHost = checkIfHost(connectionArg);
-//        String hostIp = getHostIp(connectionArg);
-//
-//        if (isHost) {
-//            handleHostClient(clientSocket, hostIp);
-//        } else {
-//            GamePlay gamePlay = handleJoinerClient(clientSocket, hostIp);
-//            if (gamePlay != null) {
-//                gamePlay.startGame();
-//            }
-//        }
-    }
-
-    private static void handleHostClient(Socket clientSocket, String hostIp) {
-        GamePlay gamePlay = new GamePlay();
-        gamePlay.mHostClient = new HostClient();
-        gamePlay.mHostClient.mSocket = clientSocket;
-        gamePlay.mHostClient.ip = hostIp;
-        allGamePlays.add(gamePlay);
-    }
-
-    private static GamePlay handleJoinerClient(Socket clientSocket, String hostIp) {
-        for (GamePlay gamePlay : allGamePlays) {
-            if (gamePlay.mHostClient.ip.equals(hostIp)) {
-                JoinerClient joinerClient = new JoinerClient();
-                joinerClient.mSocket = clientSocket;
-                gamePlay.mJoinerClient = joinerClient;
-                return gamePlay;
-            }
+            case Constants.ConnectionTypes.TYPE_SIGN_UP:
+                handleSignUpRequest(clientSocket, connectionJsonArg);
+                break;
         }
-        return null;
     }
 
-    private static String getHostIp(String connectionArg) {
-        return null;
+    private static void handleSignUpRequest(Socket clientSocket, String connectionJsonArg) {
+
     }
 
-    private static boolean checkIfHost(String connectionArg) {
-        JSONParser parser = new JSONParser(connectionArg);
-        return false;
+    private static void handleSignInRequest(Socket clientSocket, String connectionJsonArg) {
+
     }
 }
