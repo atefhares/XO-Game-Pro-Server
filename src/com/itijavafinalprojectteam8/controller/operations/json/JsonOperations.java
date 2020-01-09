@@ -31,12 +31,30 @@ public class JsonOperations {
 
     public static String getSignUpConfirmationResponse() {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(Constants.ConnectionTypes.TYPE_SIGN_UP, Constants.ResponseCodes.RESPONSE_SUCCESS);
+        jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_TYPE, Constants.ConnectionTypes.TYPE_SIGN_UP);
+        jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_CODE, Constants.ResponseCodes.RESPONSE_SUCCESS);
         return jsonObject.toString();
     }
+
+    public static String getSignUpErrorResponse(String errorMsg) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_TYPE, Constants.ConnectionTypes.TYPE_SIGN_UP);
+        jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_CODE, Constants.ResponseCodes.RESPONSE_ERROR);
+        jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_MSG, errorMsg);
+        return jsonObject.toString();
+    }
+
     public static String getSignInConfirmationResponse() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(Constants.ConnectionTypes.TYPE_SIGN_IN, Constants.ResponseCodes.RESPONSE_SUCCESS);
+        return jsonObject.toString();
+    }
+
+    public static String getSignInErrorResponse(String errorMsg) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_TYPE, Constants.ConnectionTypes.TYPE_SIGN_IN);
+        jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_CODE, Constants.ResponseCodes.RESPONSE_ERROR);
+        jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_MSG, errorMsg);
         return jsonObject.toString();
     }
 }

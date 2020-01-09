@@ -24,3 +24,5 @@ hs_err_pid*
 
 
 /build
+/src/com/itijavafinalprojectteam8/ServerTestClass.java
+/src/com/itijavafinalprojectteam8/ClientTestClass.java

@@ -7,6 +7,9 @@ public class Constants {
     }
 
     public static class JsonKeys {
+        public static final String KEY_RESPONSE_TYPE = "rst";
+        public static final String KEY_RESPONSE_CODE = "rsc";
+        public static final String KEY_RESPONSE_MSG = "rsm";
         public static final String KEY_REQUEST_TYPE = "rt";
         public static final String KEY_USER_NAME = "un";
         public static final String KEY_USER_EMAIL = "ue";

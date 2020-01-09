@@ -13,12 +13,8 @@ import javafx.stage.Stage;
  *
  * @author ahares
  */
-public class MainClass extends Application{
+public class MainClass{
     public static void main(String[] args) {
         System.out.println("This is the server!");
-    }
-
-    @Override
-    public void start(Stage stage) throws Exception {
     }
 }

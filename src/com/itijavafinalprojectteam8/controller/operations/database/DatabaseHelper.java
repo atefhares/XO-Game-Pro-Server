@@ -11,12 +11,12 @@ import java.util.Vector;
 
 public class DatabaseHelper {
 
-    private static final String USERNAME = "root";
-    private static final String PASSWORD = "";
+    private static final String USERNAME = "test";
+    private static final String PASSWORD = "!Pass12345678";
 
     private static final String SERVER = "localhost";
     private static final String PORT = "3306";
-    private static final String PARAMS = "?useSSL=false&serverTimezone=UTC";
+    private static final String PARAMS = "?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC";
     private static final String URL = "jdbc:mysql://" + SERVER + ":" + PORT;
     /*======================================================================================================*/
 
@@ -51,7 +51,7 @@ public class DatabaseHelper {
         try {
             //create connection to mysql server
 
-            //this line to ensure driver exists
+            //this line to ensure driver lib added loaded
             Class.forName("com.mysql.jdbc.Driver");
 
             mConnection = DriverManager.getConnection(URL + PARAMS, USERNAME, PASSWORD);
@@ -83,7 +83,6 @@ public class DatabaseHelper {
     }
 
     private static void createGamesTable(@NotNull final Statement statement) throws SQLException {
-
         int result = statement.executeUpdate(
                 "CREATE TABLE IF NOT EXISTS " + GAMES_TABLE_NAME
                         + "("
@@ -94,11 +93,10 @@ public class DatabaseHelper {
                         + GAMES_TABLE_COLUMN_START_DATE + " DATE NOT NULL, "
                         + GAMES_TABLE_COLUMN_END_DATE + " DATE NOT NULL, "
                         + GAMES_TABLE_COLUMN_STATUS + " VARCHAR(255) NOT NULL, "
-                        + "FOREIGN KEY (" + GAMES_TABLE_COLUMN_PLAYER1_ID + ") REFERENCES " + PLAYERS_TABLE_NAME + "(" + PLAYERS_TABLE_COLUMN_ID + "),"
-                        + "FOREIGN KEY (" + GAMES_TABLE_COLUMN_PLAYER2_ID + ") REFERENCES " + PLAYERS_TABLE_NAME + "(" + PLAYERS_TABLE_COLUMN_ID + "),"
-                        + "FOREIGN KEY (" + GAMES_TABLE_COLUMN_WINNER_ID + ") REFERENCES " + PLAYERS_TABLE_NAME + "(" + PLAYERS_TABLE_COLUMN_ID + "),"
+                        + "FOREIGN KEY (" + GAMES_TABLE_COLUMN_PLAYER1_ID + ") REFERENCES " + PLAYERS_TABLE_NAME + "(" + PLAYERS_TABLE_COLUMN_ID + "), "
+                        + "FOREIGN KEY (" + GAMES_TABLE_COLUMN_PLAYER2_ID + ") REFERENCES " + PLAYERS_TABLE_NAME + "(" + PLAYERS_TABLE_COLUMN_ID + "), "
+                        + "FOREIGN KEY (" + GAMES_TABLE_COLUMN_WINNER_ID + ") REFERENCES " + PLAYERS_TABLE_NAME + "(" + PLAYERS_TABLE_COLUMN_ID + ") "
                         + ")"
-
         );
         System.out.println("[createGamesTable] result: " + result);
     }
@@ -110,7 +108,7 @@ public class DatabaseHelper {
                         + PLAYERS_TABLE_COLUMN_ID + " INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
                         + PLAYERS_TABLE_COLUMN_NAME + " VARCHAR(100) NOT NULL, "
                         + PLAYERS_TABLE_COLUMN_EMAIL + " VARCHAR(100) NOT NULL, "
-                        + PLAYERS_TABLE_COLUMN_PASSWORD + " VARCHAR(100) NOT NULL, "
+                        + PLAYERS_TABLE_COLUMN_PASSWORD + " VARCHAR(128) NOT NULL, "
                         + PLAYERS_TABLE_COLUMN_POINTS + " INT DEFAULT 0 NOT NULL, "
                         + PLAYERS_TABLE_COLUMN_STATUS + " INT DEFAULT " + Constants.PlayerStatus.OFFLINE + " NOT NULL"
                         + ")"
@@ -148,8 +146,8 @@ public class DatabaseHelper {
 
         ResultSet resultSet = statement.executeQuery(
                 "select * from " + PLAYERS_TABLE_NAME
-                        + " WHERE " + PLAYERS_TABLE_COLUMN_EMAIL + " == " + email
-                        + " AND " + PLAYERS_TABLE_COLUMN_PASSWORD + " == " + pass
+                        + " WHERE " + PLAYERS_TABLE_COLUMN_EMAIL + "=" + "\"" + email + "\""
+                        + " AND " + PLAYERS_TABLE_COLUMN_PASSWORD + "=" + "\"" + pass + "\""
                         + " LIMIT 1"
         );
 
@@ -181,19 +179,24 @@ public class DatabaseHelper {
 
         ResultSet resultSet = statement.executeQuery(
                 "select * from " + PLAYERS_TABLE_NAME
-                        + " WHERE " + PLAYERS_TABLE_COLUMN_EMAIL + " == " + email
+                        + " WHERE " + PLAYERS_TABLE_COLUMN_EMAIL + "=" + "\"" + email + "\""
                         + " LIMIT 1"
         );
 
-        if (resultSet == null || !resultSet.first())
-            throw new IllegalStateException("could not find player in database");
-
-        Player player = new Player();
-        player.id = resultSet.getInt(PLAYERS_TABLE_COLUMN_ID);
-        player.name = resultSet.getString(PLAYERS_TABLE_COLUMN_NAME);
-        player.email = resultSet.getString(PLAYERS_TABLE_COLUMN_EMAIL);
+        Player player = null;
+        if (resultSet != null && resultSet.first()) {
+            player = new Player();
+            player.id = resultSet.getInt(PLAYERS_TABLE_COLUMN_ID);
+            player.name = resultSet.getString(PLAYERS_TABLE_COLUMN_NAME);
+            player.email = resultSet.getString(PLAYERS_TABLE_COLUMN_EMAIL);
+            player.status = resultSet.getInt(PLAYERS_TABLE_COLUMN_STATUS);
+        }
 
         return player;
+    }
+
+    public static boolean playerAlreadyRegistered(String playerEmail) throws SQLException {
+        return getPlayerByEmail(playerEmail) != null;
     }
 
     /*======================================================================================================*/
