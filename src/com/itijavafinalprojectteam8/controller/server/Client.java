@@ -32,7 +32,7 @@ public final class Client extends Thread {
         if (mDataOutputStream == null)
             throw new IllegalStateException("Can not send msg!");
 
-        System.out.println("[send] attempt to send to server");
+        System.out.println("[send] attempt to send to client");
         mDataOutputStream.writeUTF(msg);
     }
 
