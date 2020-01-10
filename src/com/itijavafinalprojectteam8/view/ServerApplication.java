@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package project;
+package com.itijavafinalprojectteam8.view ;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -15,7 +15,7 @@ import javafx.stage.Stage;
  *
  * @author Esraa
  */
-public class Project extends Application {
+public class ServerApplication extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
