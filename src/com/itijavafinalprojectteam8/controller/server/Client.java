@@ -5,7 +5,7 @@ import com.itijavafinalprojectteam8.controller.operations.json.JsonOperations;
 import com.itijavafinalprojectteam8.controller.operations.log.GuiLogger;
 import com.itijavafinalprojectteam8.model.Player;
 import com.itijavafinalprojectteam8.others.Constants;
-import com.sun.istack.internal.NotNull;
+
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -23,7 +23,7 @@ public final class Client extends Thread {
     private Player mPlayer;
     private AtomicBoolean mIsShutdownCalled = new AtomicBoolean(false);
 
-    public final void init(@NotNull Socket socket) throws IOException {
+    public final void init( Socket socket) throws IOException {
         if (socket == null)
             throw new NullPointerException("Socket is NULL!");
 
