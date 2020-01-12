@@ -1,8 +1,11 @@
 package com.itijavafinalprojectteam8.controller.operations.json;
 
+import com.itijavafinalprojectteam8.model.Player;
 import com.itijavafinalprojectteam8.others.Constants;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class JsonOperations {
@@ -29,11 +32,22 @@ public class JsonOperations {
         return data;
     }
 
-    public static String getSignUpConfirmationResponse() {
+    public static String getSignUpConfirmationResponse(Player player) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_TYPE, Constants.ConnectionTypes.TYPE_SIGN_UP);
         jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_CODE, Constants.ResponseCodes.RESPONSE_SUCCESS);
+        jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_MSG, getPlayerJson(player));
         return jsonObject.toString();
+    }
+
+    private static String getPlayerJson(Player player) {
+        JSONObject playerJson = new JSONObject();
+        playerJson.put("id", player.id);
+        playerJson.put("email", player.email);
+        playerJson.put("name", player.name);
+        playerJson.put("status", player.status);
+        playerJson.put("points", player.points);
+        return playerJson.toString();
     }
 
     public static String getSignUpErrorResponse(String errorMsg) {
@@ -44,9 +58,11 @@ public class JsonOperations {
         return jsonObject.toString();
     }
 
-    public static String getSignInConfirmationResponse() {
+    public static String getSignInConfirmationResponse(Player player) {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(Constants.ConnectionTypes.TYPE_SIGN_IN, Constants.ResponseCodes.RESPONSE_SUCCESS);
+        jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_TYPE, Constants.ConnectionTypes.TYPE_SIGN_IN);
+        jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_CODE, Constants.ResponseCodes.RESPONSE_SUCCESS);
+        jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_MSG, getPlayerJson(player));
         return jsonObject.toString();
     }
 
@@ -56,5 +72,18 @@ public class JsonOperations {
         jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_CODE, Constants.ResponseCodes.RESPONSE_ERROR);
         jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_MSG, errorMsg);
         return jsonObject.toString();
+    }
+
+    public static String getPlayersListJson(ArrayList<Player> allPlayers) {
+        JSONArray objects = new JSONArray();
+        for (Player p : allPlayers) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put(Constants.JsonKeys.KEY_USER_EMAIL, p.email);
+            jsonObject.put(Constants.JsonKeys.KEY_USER_NAME, p.name);
+            jsonObject.put(Constants.JsonKeys.KEY_USER_STATUS, p.status);
+            jsonObject.put(Constants.JsonKeys.KEY_USER_POINTS, p.points);
+            objects.put(jsonObject);
+        }
+        return objects.toString();
     }
 }

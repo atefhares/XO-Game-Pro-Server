@@ -2,11 +2,13 @@
 package com.itijavafinalprojectteam8.controller.operations.database;
 
 
+import com.itijavafinalprojectteam8.controller.operations.log.GuiLogger;
 import com.itijavafinalprojectteam8.model.Player;
 import com.itijavafinalprojectteam8.others.Constants;
 import com.sun.istack.internal.NotNull;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class DatabaseHelper {
@@ -55,18 +57,18 @@ public class DatabaseHelper {
             Class.forName("com.mysql.jdbc.Driver");
 
             mConnection = DriverManager.getConnection(URL + PARAMS, USERNAME, PASSWORD);
-            System.out.println("Server connection established successfully...");
+            GuiLogger.log("Server connection established successfully...");
 
-            System.out.println("Attempt to create database IF NOT EXISTS: " + DATABASE_NAME);
+            GuiLogger.log("Attempt to create database IF NOT EXISTS: " + DATABASE_NAME);
             Statement statement = mConnection.createStatement();
             int Result = statement.executeUpdate("CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME);
-            System.out.println("Database creation result: " + Result);
+            GuiLogger.log("Database creation result: " + Result);
 
             // closing this connection and open a connection to the database itself
             mConnection.close();
-            System.out.println("Attempt to select database: " + DATABASE_NAME);
+            GuiLogger.log("Attempt to select database: " + DATABASE_NAME);
             mConnection = DriverManager.getConnection(URL + "/" + DATABASE_NAME + PARAMS, USERNAME, PASSWORD);
-            System.out.println("Database selected successfully...");
+            GuiLogger.log("Database selected successfully...");
 
         } catch (ClassNotFoundException ex) {
             ex.printStackTrace();
@@ -74,7 +76,7 @@ public class DatabaseHelper {
     }
 
     public static void createTables() throws SQLException {
-        System.out.println("Attempt to create table: " + PLAYERS_TABLE_NAME);
+        GuiLogger.log("Attempt to create table: " + PLAYERS_TABLE_NAME);
 
         Statement statement = mConnection.createStatement();
 
@@ -98,7 +100,7 @@ public class DatabaseHelper {
                         + "FOREIGN KEY (" + GAMES_TABLE_COLUMN_WINNER_ID + ") REFERENCES " + PLAYERS_TABLE_NAME + "(" + PLAYERS_TABLE_COLUMN_ID + ") "
                         + ")"
         );
-        System.out.println("[createGamesTable] result: " + result);
+        GuiLogger.log("[createGamesTable] result: " + result);
     }
 
     private static void createPlayersTable(@NotNull final Statement statement) throws SQLException {
@@ -113,7 +115,7 @@ public class DatabaseHelper {
                         + PLAYERS_TABLE_COLUMN_STATUS + " INT DEFAULT " + Constants.PlayerStatus.OFFLINE + " NOT NULL"
                         + ")"
         );
-        System.out.println("[createPlayersTable] result: " + result);
+        GuiLogger.log("[createPlayersTable] result: " + result);
     }
 
     /*======================================================================================================*/
@@ -135,7 +137,7 @@ public class DatabaseHelper {
                 + ")"
         );
 
-        System.out.println("[insertPlayer] result: " + result);
+        GuiLogger.log("[insertPlayer] result: " + result);
     }
 
     public static boolean isUserCredentialsCorrect(@NotNull final String email, @NotNull final String pass) throws SQLException {
@@ -168,7 +170,7 @@ public class DatabaseHelper {
                 + " WHERE " + PLAYERS_TABLE_COLUMN_ID + "=" + playerId
         );
 
-        System.out.println("[updatePlayerStatus] result: " + result);
+        GuiLogger.log("[updatePlayerStatus] result: " + result);
     }
 
     public static Player getPlayerByEmail(String email) throws SQLException {
@@ -190,6 +192,7 @@ public class DatabaseHelper {
             player.name = resultSet.getString(PLAYERS_TABLE_COLUMN_NAME);
             player.email = resultSet.getString(PLAYERS_TABLE_COLUMN_EMAIL);
             player.status = resultSet.getInt(PLAYERS_TABLE_COLUMN_STATUS);
+            player.points = resultSet.getInt(PLAYERS_TABLE_COLUMN_POINTS);
         }
 
         return player;
@@ -197,6 +200,29 @@ public class DatabaseHelper {
 
     public static boolean playerAlreadyRegistered(String playerEmail) throws SQLException {
         return getPlayerByEmail(playerEmail) != null;
+    }
+
+    public static ArrayList<Player> getAllPlayers() throws SQLException {
+        if (mConnection == null)
+            throw new NullPointerException("No database connection found");
+
+        Statement statement = mConnection.createStatement();
+
+        ResultSet resultSet = statement.executeQuery("select * from " + PLAYERS_TABLE_NAME);
+
+        ArrayList<Player> players = new ArrayList<>();
+
+        while (resultSet.next()) {
+            Player player = new Player();
+            player.id = resultSet.getInt(PLAYERS_TABLE_COLUMN_ID);
+            player.name = resultSet.getString(PLAYERS_TABLE_COLUMN_NAME);
+            player.email = resultSet.getString(PLAYERS_TABLE_COLUMN_EMAIL);
+            player.status = resultSet.getInt(PLAYERS_TABLE_COLUMN_STATUS);
+            player.points = resultSet.getInt(PLAYERS_TABLE_COLUMN_POINTS);
+            players.add(player);
+        }
+
+        return players;
     }
 
     /*======================================================================================================*/
@@ -219,7 +245,7 @@ public class DatabaseHelper {
 //                + ")"
 //        );
 //
-//        System.out.println("Insertion result: " + result);
+//        GuiLogger.log("Insertion result: " + result);
 //
 //    }
 //
@@ -229,7 +255,7 @@ public class DatabaseHelper {
 //
 //
 //        Statement statement = mConnection.createStatement();
-//        System.out.println(Attribute.get(0));
+//        GuiLogger.log(Attribute.get(0));
 //
 //        int result = statement.executeUpdate("INSERT INTO " + GAMES_TABLE_NAME
 //                + " VALUES ("
@@ -243,7 +269,7 @@ public class DatabaseHelper {
 //                + ")"
 //        );
 //
-//        System.out.println("Insertion result: " + result);
+//        GuiLogger.log("Insertion result: " + result);
 //
 //    }
 //
@@ -263,7 +289,7 @@ public class DatabaseHelper {
 //                + " WHERE " + PLAYERS_TABLE_COLUMN_ID + "=" + Attribute.get(0)
 //        );
 //
-//        System.out.println("Update result: " + result);
+//        GuiLogger.log("Update result: " + result);
 //    }
 //
 //    public static void updateGameRow(Vector Attribute) throws SQLException {
@@ -283,7 +309,7 @@ public class DatabaseHelper {
 //                + " WHERE " + GAMES_TABLE_COLUMN_ID + "=" + Attribute.get(0)
 //        );
 //
-//        System.out.println("Update result: " + result);
+//        GuiLogger.log("Update result: " + result);
 //    }
 //
 //    public static void deleteUserRow(int UserID) throws SQLException {
@@ -295,7 +321,7 @@ public class DatabaseHelper {
 //        int result = statement.executeUpdate("DELETE FROM " + PLAYERS_TABLE_NAME
 //                + " WHERE " + PLAYERS_TABLE_COLUMN_ID + "=" + UserID
 //        );
-//        System.out.println("Deletion result: " + result);
+//        GuiLogger.log("Deletion result: " + result);
 //    }
 //
 //    public static void deleteGameRow(int GameID) throws SQLException {
@@ -307,7 +333,7 @@ public class DatabaseHelper {
 //        int result = statement.executeUpdate("DELETE FROM " + GAMES_TABLE_NAME
 //                + " WHERE " + GAMES_TABLE_COLUMN_ID + "=" + GameID
 //        );
-//        System.out.println("Deletion result: " + result);
+//        GuiLogger.log("Deletion result: " + result);
 //    }
 //
 //    public void SelectUserAll() throws SQLException {
@@ -319,7 +345,7 @@ public class DatabaseHelper {
 //        ResultSet TmpUsers = statement.executeQuery("SELECT * FROM " + PLAYERS_TABLE_NAME);
 //        setUserSet(TmpUsers);
 //
-//        System.out.println("Selected Query :" + TmpUsers);
+//        GuiLogger.log("Selected Query :" + TmpUsers);
 //    }
 //
 //    public void SelectGameAll() throws SQLException {
@@ -331,7 +357,7 @@ public class DatabaseHelper {
 //        ResultSet TmpGames = statement.executeQuery("SELECT * FROM " + GAMES_TABLE_NAME);
 //        setGameSet(TmpGames);
 //
-//        System.out.println("Selected Query :" + TmpGames);
+//        GuiLogger.log("Selected Query :" + TmpGames);
 //    }
 //
 //    public boolean Signin(Vector UserObj) throws SQLException {
@@ -341,7 +367,7 @@ public class DatabaseHelper {
 //        ResultSet TmpUser = statement.executeQuery("SELECT * FROM `" + PLAYERS_TABLE_NAME + "` WHERE `Email` LIKE '" + UserObj.get(0) + "'");
 //
 //
-//        //System.out.println(TmpUser.getString(2));
+//        //GuiLogger.log(TmpUser.getString(2));
 //        if (TmpUser.first() && TmpUser.getString(5).equals(UserObj.get(1))) {
 //            return true;
 //        } else {

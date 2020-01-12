@@ -10,6 +10,6 @@
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
     <jar href="XO-Game-Pro-Server.jar" size="1380" download="eager" />
   </resources>
-  <jfx:javafx-desc  width="800" height="600" main-class="com.itijavafinalprojectteam8.MainClass"  name="XO-Game-Pro-Server" />
+  <jfx:javafx-desc width="800" height="600" main-class="com.itijavafinalprojectteam8.ServerApplication" name="XO-Game-Pro-Server" />
   <update check="always"/>
 </jnlp>

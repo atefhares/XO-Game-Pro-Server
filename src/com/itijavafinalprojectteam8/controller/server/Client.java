@@ -1,6 +1,10 @@
 package com.itijavafinalprojectteam8.controller.server;
 
+import com.itijavafinalprojectteam8.controller.operations.Props;
+import com.itijavafinalprojectteam8.controller.operations.json.JsonOperations;
+import com.itijavafinalprojectteam8.controller.operations.log.GuiLogger;
 import com.itijavafinalprojectteam8.model.Player;
+import com.itijavafinalprojectteam8.others.Constants;
 import com.sun.istack.internal.NotNull;
 
 import java.io.DataInputStream;
@@ -32,7 +36,7 @@ public final class Client extends Thread {
         if (mDataOutputStream == null)
             throw new IllegalStateException("Can not send msg!");
 
-        System.out.println("[send] attempt to send to client");
+        GuiLogger.log("[send] attempt to send to client");
         mDataOutputStream.writeUTF(msg);
     }
 
@@ -51,23 +55,37 @@ public final class Client extends Thread {
     public void run() {
         while (!mIsShutdownCalled.get()) {
             try {
-                System.out.println("Attempt to read from client");
+                GuiLogger.log("Attempt to read from client");
                 String msg = read();
                 if (!msg.isEmpty()) {
-
-                    //testing
-                    System.out.println("client sent: " + msg);
-                    send(msg);
+                    handleMessageFromClient(msg);
                 }
                 Logger.getLogger("SERVER").log(Level.INFO, "");
-//                System.out.println("Attempt to wait before reading again");
+//                GuiLogger.log("Attempt to wait before reading again");
 //                Thread.sleep(1000);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        System.out.println("CLIENT THREAD JOB ENDED!!!!");
+        GuiLogger.log("CLIENT THREAD JOB ENDED!!!!");
+    }
+
+    private void handleMessageFromClient(String jsonStr) {
+        String requestType = JsonOperations.getRequestType(jsonStr);
+        switch (requestType){
+            case Constants.ConnectionTypes.TYPE_GET_ALL_PLAYERS:
+                handleGetAllUsersRequest(jsonStr);
+                break;
+        }
+    }
+
+    private void handleGetAllUsersRequest(String jsonStr) {
+        try {
+            send(Props.allPlayersJson.getValue());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void shutdown() {

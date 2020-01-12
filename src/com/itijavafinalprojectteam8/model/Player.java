@@ -5,6 +5,7 @@ public class Player {
     public String name;
     public String email;
     public int status;
+    public int points;
 
     @Override
     public String toString() {
@@ -13,6 +14,7 @@ public class Player {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", status=" + status +
+                ", points=" + points +
                 '}';
     }
 }

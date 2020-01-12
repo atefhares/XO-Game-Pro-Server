@@ -1,8 +1,10 @@
 package com.itijavafinalprojectteam8.controller.server;
 
 
-import com.itijavafinalprojectteam8.controller.operations.json.JsonOperations;
+import com.itijavafinalprojectteam8.controller.operations.Props;
 import com.itijavafinalprojectteam8.controller.operations.database.DatabaseHelper;
+import com.itijavafinalprojectteam8.controller.operations.json.JsonOperations;
+import com.itijavafinalprojectteam8.controller.operations.log.GuiLogger;
 import com.itijavafinalprojectteam8.model.Player;
 import com.itijavafinalprojectteam8.others.Constants;
 
@@ -27,23 +29,28 @@ public class GameServer {
     private static ConcurrentHashMap<String, Client> allClients = new ConcurrentHashMap<>();
 
     public static void startServer() {
+
         if (mGameConnectionsSocket != null && !mGameConnectionsSocket.isClosed()) {
-            System.out.println("Server already running...");
+            GuiLogger.log("Server already running...");
             return;
         }
 
         try {
             mGameConnectionsSocket = new ServerSocket(SERVER_PORT);
-            System.out.println("Server socket created...");
+            GuiLogger.log("Server socket created...");
 
-            System.out.println("attempt to start main server service...");
+            GuiLogger.log("attempt to start main server service...");
             startServerMainService();
 
-            System.out.println("attempt to open connection to database...");
+            GuiLogger.log("attempt to open connection to database...");
             DatabaseHelper.setupDatabaseConnection();
 
-            System.out.println("attempt to create tables IF NOT EXISTS...");
+            GuiLogger.log("attempt to create tables IF NOT EXISTS...");
             DatabaseHelper.createTables();
+
+            //initial players json str
+            Props.allPlayersJson.setValue(JsonOperations.getPlayersListJson(DatabaseHelper.getAllPlayers()));
+
         } catch (IOException | SQLException e) {
             e.printStackTrace();
         }
@@ -51,15 +58,13 @@ public class GameServer {
 
     public static void stopServer() {
         if (mGameConnectionsSocket != null && mGameConnectionsSocket.isClosed()) {
-            System.out.println("Server is NOT running...");
+            GuiLogger.log("Server is NOT running...");
             return;
         }
         try {
             if (mGameConnectionsSocket != null) {
                 mGameConnectionsSocket.close();
             }
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -73,9 +78,9 @@ public class GameServer {
         mMainServiceThread = new Thread(() -> {
             while (mGameConnectionsSocket != null && !mGameConnectionsSocket.isClosed()) {
                 try {
-                    System.out.println("attempt to accept clients...");
+                    GuiLogger.log("attempt to accept clients...");
                     Socket clientSocket = mGameConnectionsSocket.accept();
-                    System.out.println("accepted new client: " + clientSocket.toString() + "\nattempt to handle it...");
+                    GuiLogger.log("accepted new client: " + clientSocket.toString() + "\nattempt to handle it...");
                     handleClient(clientSocket);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -90,9 +95,9 @@ public class GameServer {
     private static void handleClient(Socket clientSocket) throws IOException {
         DataInputStream dataInputStream = new DataInputStream(clientSocket.getInputStream());
         String connectionJsonArg = dataInputStream.readUTF();
-        System.out.println("[handleClient] connection json: " + connectionJsonArg);
+        GuiLogger.log("[handleClient] connection json: " + connectionJsonArg);
         String requestType = JsonOperations.getRequestType(connectionJsonArg);
-        System.out.println("[handleClient] requestType: " + requestType);
+        GuiLogger.log("[handleClient] requestType: " + requestType);
 
         switch (requestType) {
             case Constants.ConnectionTypes.TYPE_SIGN_IN:
@@ -112,7 +117,7 @@ public class GameServer {
             client.init(clientSocket);
 
             if (DatabaseHelper.playerAlreadyRegistered(data.get(1))) {
-                System.out.println("[handleSignUpRequest] Player already registered!");
+                GuiLogger.log("[handleSignUpRequest] Player already registered!");
                 client.send(JsonOperations.getSignUpErrorResponse("Already registered!"));
                 client.shutdown();
                 return;
@@ -124,7 +129,7 @@ public class GameServer {
             client.setPlayer(player);
             client.start();
             allClients.put(player.email, client);
-            client.send(JsonOperations.getSignUpConfirmationResponse());
+            client.send(JsonOperations.getSignUpConfirmationResponse(player));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -133,21 +138,21 @@ public class GameServer {
 
     private static void handleSignInRequest(Socket clientSocket, String connectionJsonArg) {
         try {
-            System.out.println("[handleSignInRequest] called");
+            GuiLogger.log("[handleSignInRequest] called");
 
             Vector<String> data = JsonOperations.getSignInData(connectionJsonArg);
-            System.out.println("[handleSignInRequest] data: " + data);
+            GuiLogger.log("[handleSignInRequest] data: " + data);
 
             Client client = new Client();
             client.init(clientSocket);
 
             if (DatabaseHelper.isUserCredentialsCorrect(data.get(0), data.get(1))) {
                 Player player = DatabaseHelper.getPlayerByEmail(data.get(0));
-                System.out.println("created player: " + player.toString());
+                GuiLogger.log("created player: " + player.toString());
                 client.setPlayer(player);
                 client.start();
                 allClients.put(player.email, client);
-                client.send(JsonOperations.getSignInConfirmationResponse());
+                client.send(JsonOperations.getSignInConfirmationResponse(player));
             } else {
                 client.send(JsonOperations.getSignInErrorResponse("Wrong user name or pass"));
                 client.shutdown();
