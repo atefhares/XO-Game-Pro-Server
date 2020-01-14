@@ -39,6 +39,7 @@ public class GameServer {
         try {
             mGameConnectionsSocket = new ServerSocket(SERVER_PORT);
             GuiLogger.log("Server socket created...");
+            GuiLogger.log("Server socket: " + mGameConnectionsSocket.toString());
 
             GuiLogger.log("attempt to start main server service...");
             startServerMainService();
