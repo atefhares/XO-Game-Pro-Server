@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -49,7 +50,7 @@ public class GameServer {
             DatabaseHelper.createTables();
 
             //initial players json str
-            Props.allPlayersJson.setValue(JsonOperations.getPlayersListJson(DatabaseHelper.getAllPlayers()));
+            initAllPlayersJson();
 
         } catch (IOException | SQLException e) {
             e.printStackTrace();
@@ -131,6 +132,9 @@ public class GameServer {
             allClients.put(player.email, client);
             client.send(JsonOperations.getSignUpConfirmationResponse(player));
             DatabaseHelper.updatePlayerStatus(player.email, Constants.PlayerStatus.ONLINE_NOT_IN_GAME);
+
+            handleOnNewClientConnected();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -154,6 +158,8 @@ public class GameServer {
                 allClients.put(player.email, client);
                 client.send(JsonOperations.getSignInConfirmationResponse(player));
                 DatabaseHelper.updatePlayerStatus(player.email, Constants.PlayerStatus.ONLINE_NOT_IN_GAME);
+
+                handleOnNewClientConnected();
             } else {
                 client.send(JsonOperations.getSignInErrorResponse("Wrong user name or pass"));
                 client.shutdown();
@@ -161,6 +167,30 @@ public class GameServer {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private static void handleOnNewClientConnected() {
+        //initial players json str
+        try {
+            initAllPlayersJson();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void initAllPlayersJson() throws SQLException {
+        Props.allPlayersJson.setValue(JsonOperations.getPlayersListJson(DatabaseHelper.getAllPlayers()));
+        sendAllPlayersJsonToAllConnectedClients();
+    }
+
+    private static void sendAllPlayersJsonToAllConnectedClients() {
+        for (Map.Entry<String, Client> entry : allClients.entrySet()) {
+            try {
+                entry.getValue().send(JsonOperations.createAllPlayersJsonString(Props.allPlayersJson.getValue()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
