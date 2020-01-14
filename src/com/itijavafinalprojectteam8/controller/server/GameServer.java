@@ -130,7 +130,7 @@ public class GameServer {
             client.start();
             allClients.put(player.email, client);
             client.send(JsonOperations.getSignUpConfirmationResponse(player));
-
+            DatabaseHelper.updatePlayerStatus(player.email, Constants.PlayerStatus.ONLINE_NOT_IN_GAME);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -153,6 +153,7 @@ public class GameServer {
                 client.start();
                 allClients.put(player.email, client);
                 client.send(JsonOperations.getSignInConfirmationResponse(player));
+                DatabaseHelper.updatePlayerStatus(player.email, Constants.PlayerStatus.ONLINE_NOT_IN_GAME);
             } else {
                 client.send(JsonOperations.getSignInErrorResponse("Wrong user name or pass"));
                 client.shutdown();

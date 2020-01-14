@@ -158,7 +158,7 @@ public class DatabaseHelper {
         return resultSet.getString(PLAYERS_TABLE_COLUMN_PASSWORD).equals(pass);
     }
 
-    public static void updatePlayerStatus(int status, int playerId) throws SQLException {
+    public static void updatePlayerStatus(String email, int status) throws SQLException {
         if (mConnection == null)
             throw new NullPointerException("No database connection found");
 
@@ -166,7 +166,7 @@ public class DatabaseHelper {
         int result = statement.executeUpdate("UPDATE " + PLAYERS_TABLE_NAME
                 + " SET "
                 + PLAYERS_TABLE_COLUMN_STATUS + "=" + status
-                + " WHERE " + PLAYERS_TABLE_COLUMN_ID + "=" + playerId
+                + " WHERE " + PLAYERS_TABLE_COLUMN_EMAIL + "=\"" + email + "\""
         );
 
         GuiLogger.log("[updatePlayerStatus] result: " + result);

@@ -1,11 +1,11 @@
 package com.itijavafinalprojectteam8.controller.server;
 
 import com.itijavafinalprojectteam8.controller.operations.Props;
+import com.itijavafinalprojectteam8.controller.operations.database.DatabaseHelper;
 import com.itijavafinalprojectteam8.controller.operations.json.JsonOperations;
 import com.itijavafinalprojectteam8.controller.operations.log.GuiLogger;
 import com.itijavafinalprojectteam8.model.Player;
 import com.itijavafinalprojectteam8.others.Constants;
-
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -23,7 +23,7 @@ public final class Client extends Thread {
     private Player mPlayer;
     private AtomicBoolean mIsShutdownCalled = new AtomicBoolean(false);
 
-    public final void init( Socket socket) throws IOException {
+    public final void init(Socket socket) throws IOException {
         if (socket == null)
             throw new NullPointerException("Socket is NULL!");
 
@@ -55,6 +55,13 @@ public final class Client extends Thread {
     public void run() {
         while (!mIsShutdownCalled.get()) {
             try {
+                if (mSocket != null && mSocket.isClosed()) {
+                    GuiLogger.log("Player: " + mPlayer.email + " is OFFLINE");
+                    DatabaseHelper.updatePlayerStatus(mPlayer.email, Constants.PlayerStatus.OFFLINE);
+                    shutdown();
+                    return;
+                }
+
                 GuiLogger.log("Attempt to read from client");
                 String msg = read();
                 if (!msg.isEmpty()) {
@@ -73,7 +80,7 @@ public final class Client extends Thread {
 
     private void handleMessageFromClient(String jsonStr) {
         String requestType = JsonOperations.getRequestType(jsonStr);
-        switch (requestType){
+        switch (requestType) {
             case Constants.ConnectionTypes.TYPE_GET_ALL_PLAYERS:
                 handleGetAllUsersRequest(jsonStr);
                 break;
