@@ -95,4 +95,16 @@ public class JsonOperations {
         jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_MSG, allPlayers);
         return jsonObject.toString();
     }
+
+    public static String getOtherPlayerEmail(String jsonStr) {
+        JSONObject jsonObject = new JSONObject(jsonStr);
+        return jsonObject.optString(Constants.JsonKeys.KEY_USER_EMAIL);
+    }
+
+    public static String getInvitationJson(String email) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_TYPE, Constants.ConnectionTypes.TYPE_SEND_INVITATION);
+        jsonObject.put(Constants.JsonKeys.KEY_USER_EMAIL, email);
+        return jsonObject.toString();
+    }
 }

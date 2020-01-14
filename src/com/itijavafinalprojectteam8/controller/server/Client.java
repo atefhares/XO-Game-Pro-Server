@@ -87,6 +87,19 @@ public final class Client extends Thread {
             case Constants.ConnectionTypes.TYPE_GET_ALL_PLAYERS:
                 handleGetAllUsersRequest(jsonStr);
                 break;
+
+            case Constants.ConnectionTypes.TYPE_SEND_INVITATION:
+                handleSendInvitationRequest(jsonStr);
+                break;
+        }
+    }
+
+    private void handleSendInvitationRequest(String jsonStr) {
+        try {
+            String otherPlayerEmail = JsonOperations.getOtherPlayerEmail(jsonStr);
+            GameServer.sendToOtherClient(otherPlayerEmail, JsonOperations.getInvitationJson(mPlayer.email));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

@@ -74,10 +74,6 @@ public class GameServer {
         }
     }
 
-    /**
-     * This method is responsible for creating the JOB or Service
-     * that runs in Bg and waits for clients to connect
-     */
     private static void startServerMainService() {
         mMainServiceThread = new Thread(() -> {
             while (mGameConnectionsSocket != null && !mGameConnectionsSocket.isClosed()) {
@@ -203,5 +199,9 @@ public class GameServer {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void sendToOtherClient(String otherPlayerEmail, String jsonStr) throws IOException {
+        allClients.get(otherPlayerEmail).send(jsonStr);
     }
 }

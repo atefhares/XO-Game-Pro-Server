@@ -5,6 +5,7 @@ public class Constants {
         public static final String TYPE_SIGN_IN = "1";
         public static final String TYPE_SIGN_UP = "2";
         public static final String TYPE_GET_ALL_PLAYERS = "3";
+        public static final String TYPE_SEND_INVITATION = "4";
     }
 
     public static class JsonKeys {
