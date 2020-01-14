@@ -30,6 +30,7 @@ public final class Client extends Thread {
         mSocket = socket;
         mDataInputStream = new DataInputStream(mSocket.getInputStream());
         mDataOutputStream = new DataOutputStream(mSocket.getOutputStream());
+
     }
 
     public final void send(String msg) throws IOException {
@@ -124,6 +125,7 @@ public final class Client extends Thread {
 
         mIsShutdownCalled.set(true);
 
+        GameServer.onSomeClientDisconnected();
     }
 
     @Override

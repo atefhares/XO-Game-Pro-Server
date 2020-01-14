@@ -193,4 +193,12 @@ public class GameServer {
             }
         }
     }
+
+    public static synchronized void onSomeClientDisconnected() {
+        try {
+            initAllPlayersJson();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
