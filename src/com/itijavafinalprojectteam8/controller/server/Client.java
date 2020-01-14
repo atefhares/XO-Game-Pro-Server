@@ -11,6 +11,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,9 +57,8 @@ public final class Client extends Thread {
     public void run() {
         while (!mIsShutdownCalled.get()) {
             try {
-                if (mSocket != null && mSocket.isClosed()) {
+                if (mSocket == null || mSocket.isClosed()) {
                     GuiLogger.log("Player: " + mPlayer.email + " is OFFLINE");
-                    DatabaseHelper.updatePlayerStatus(mPlayer.email, Constants.PlayerStatus.OFFLINE);
                     shutdown();
                     return;
                 }
@@ -69,10 +69,12 @@ public final class Client extends Thread {
                     handleMessageFromClient(msg);
                 }
                 Logger.getLogger("SERVER").log(Level.INFO, "");
-//                GuiLogger.log("Attempt to wait before reading again");
-//                Thread.sleep(1000);
+
             } catch (Exception e) {
                 e.printStackTrace();
+
+                GuiLogger.log("Player: " + mPlayer.email + " is OFFLINE");
+                shutdown();
             }
         }
 
@@ -100,6 +102,7 @@ public final class Client extends Thread {
         if (mDataInputStream != null) {
             try {
                 mDataInputStream.close();
+                mDataInputStream = null;
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -109,6 +112,7 @@ public final class Client extends Thread {
         if (mDataOutputStream != null) {
             try {
                 mDataOutputStream.close();
+                mDataOutputStream = null;
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -118,14 +122,25 @@ public final class Client extends Thread {
         if (mSocket != null) {
             try {
                 mSocket.close();
+                mSocket = null;
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
-        mIsShutdownCalled.set(true);
+
+        try {
+            DatabaseHelper.updatePlayerStatus(mPlayer.email, Constants.PlayerStatus.OFFLINE);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         GameServer.onSomeClientDisconnected();
+
+        mIsShutdownCalled.set(true);
+
+        mPlayer = null;
+
     }
 
     @Override

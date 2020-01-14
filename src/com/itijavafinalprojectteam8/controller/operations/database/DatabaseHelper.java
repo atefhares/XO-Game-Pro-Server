@@ -172,6 +172,19 @@ public class DatabaseHelper {
         GuiLogger.log("[updatePlayerStatus] result: " + result);
     }
 
+    public static void setAllPlayersOffline() throws SQLException {
+        if (mConnection == null)
+            throw new NullPointerException("No database connection found");
+
+        Statement statement = mConnection.createStatement();
+        int result = statement.executeUpdate("UPDATE " + PLAYERS_TABLE_NAME
+                + " SET "
+                + PLAYERS_TABLE_COLUMN_STATUS + "=" + Constants.PlayerStatus.OFFLINE
+        );
+
+        GuiLogger.log("[setAllPlayersOffline] result: " + result);
+    }
+
     public static Player getPlayerByEmail(String email) throws SQLException {
         if (mConnection == null)
             throw new NullPointerException("No database connection found");

@@ -50,6 +50,8 @@ public class GameServer {
             GuiLogger.log("attempt to create tables IF NOT EXISTS...");
             DatabaseHelper.createTables();
 
+            DatabaseHelper.setAllPlayersOffline();
+
             //initial players json str
             initAllPlayersJson();
 

@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
-
-<AnchorPane id="AnchorPane" prefHeight="429.0" prefWidth="746.0" xmlns="http://javafx.com/javafx/8.0.202-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.itijavafinalprojectteam8.view.GuiController">
+<?import javafx.scene.layout.GridPane?>
+<AnchorPane id="AnchorPane" prefHeight="429.0" prefWidth="746.0" xmlns="http://javafx.com/javafx/8.0.202-ea"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.itijavafinalprojectteam8.view.GuiController">
     <children>
-        <Button disable="true" fx:id="btnStopServer" layoutX="278.0" layoutY="358.0" mnemonicParsing="false" onAction="#onBtnStopServerClicked" prefHeight="31.0" prefWidth="129.0" style="-fx-background-color: #b31b10;" text="Stop Server" textFill="WHITE" />
-        <Button fx:id="btnStartServer" layoutX="73.0" layoutY="358.0" mnemonicParsing="false" onAction="#onBtnStartServerClicked" prefHeight="31.0" prefWidth="129.0" style="-fx-background-color: #49b310;" text="Start Server" textFill="#f8f6f6" />
+        <Button fx:id="btnStopServer" disable="true" layoutX="278.0" layoutY="358.0" mnemonicParsing="false"
+                onAction="#onBtnStopServerClicked" prefHeight="31.0" prefWidth="129.0"
+                style="-fx-background-color: #b31b10;" text="Stop Server" textFill="WHITE"/>
+        <Button fx:id="btnStartServer" layoutX="73.0" layoutY="358.0" mnemonicParsing="false"
+                onAction="#onBtnStartServerClicked" prefHeight="31.0" prefWidth="129.0"
+                style="-fx-background-color: #49b310;" text="Start Server" textFill="#f8f6f6"/>
 
         <ScrollPane fx:id="scrollpane" layoutX="14.0" layoutY="14.0">
-            <TextArea fx:id="logTA" editable="false" layoutX="3.0" layoutY="5.0" prefHeight="260.0" prefWidth="485.0" />
+            <TextArea fx:id="logTA" editable="false" layoutX="3.0" layoutY="5.0" prefHeight="260.0" prefWidth="485.0"/>
         </ScrollPane>
 
-        <TableView fx:id="table" layoutX="520.0" prefHeight="429.0" prefWidth="226.0">
-            <columns>
-                <TableColumn fx:id="imagesCol" prefWidth="32.0" />
-                <TableColumn fx:id="pointsCol" prefWidth="32.0" />
-                <TableColumn fx:id="playersCol" prefWidth="226.0" text="Players" />
-            </columns>
-        </TableView>
+        <ScrollPane layoutX="513.0" vbarPolicy="NEVER">
+            <GridPane style="-fx-padding: 10px;" hgap="10" fx:id="playersGrid" disable="true" layoutX="520.0"
+                      prefHeight="429.0" prefWidth="225.0">
+            </GridPane>
+        </ScrollPane>
+
     </children>
 </AnchorPane>
