@@ -88,7 +88,7 @@ public class JsonOperations {
     }
 
     public static String createAllPlayersJsonString(String allPlayersJson) {
-        JSONObject allPlayers = new JSONObject(allPlayersJson);
+        JSONArray allPlayers = new JSONArray(allPlayersJson);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_TYPE, Constants.ConnectionTypes.TYPE_GET_ALL_PLAYERS);
         jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_CODE, Constants.ResponseCodes.RESPONSE_SUCCESS);
