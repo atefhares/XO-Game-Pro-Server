@@ -6,7 +6,6 @@ import com.itijavafinalprojectteam8.controller.operations.log.GuiLogger;
 import com.itijavafinalprojectteam8.model.Player;
 import com.itijavafinalprojectteam8.others.Constants;
 
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Vector;
@@ -84,7 +83,7 @@ public class DatabaseHelper {
         createGamesTable(statement);
     }
 
-    private static void createGamesTable( final Statement statement) throws SQLException {
+    private static void createGamesTable(final Statement statement) throws SQLException {
         int result = statement.executeUpdate(
                 "CREATE TABLE IF NOT EXISTS " + GAMES_TABLE_NAME
                         + "("
@@ -103,7 +102,7 @@ public class DatabaseHelper {
         GuiLogger.log("[createGamesTable] result: " + result);
     }
 
-    private static void createPlayersTable( final Statement statement) throws SQLException {
+    private static void createPlayersTable(final Statement statement) throws SQLException {
         int result = statement.executeUpdate(
                 "CREATE TABLE IF NOT EXISTS " + PLAYERS_TABLE_NAME
                         + "("
@@ -120,7 +119,7 @@ public class DatabaseHelper {
 
     /*======================================================================================================*/
 
-    public static void insertPlayer( final Vector<String> signUpData) throws SQLException {
+    public static void insertPlayer(final Vector<String> signUpData) throws SQLException {
         if (mConnection == null)
             throw new NullPointerException("No database connection found");
 
@@ -140,7 +139,7 @@ public class DatabaseHelper {
         GuiLogger.log("[insertPlayer] result: " + result);
     }
 
-    public static boolean isUserCredentialsCorrect( final String email,  final String pass) throws SQLException {
+    public static boolean isUserCredentialsCorrect(final String email, final String pass) throws SQLException {
         if (mConnection == null)
             throw new NullPointerException("No database connection found");
 

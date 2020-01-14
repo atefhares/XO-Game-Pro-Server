@@ -82,7 +82,7 @@ public final class Client extends Thread {
 
     private void handleGetAllUsersRequest(String jsonStr) {
         try {
-            send(Props.allPlayersJson.getValue());
+            send(JsonOperations.createAllPlayersJsonString(Props.allPlayersJson.getValue()));
         } catch (IOException e) {
             e.printStackTrace();
         }

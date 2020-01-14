@@ -86,4 +86,12 @@ public class JsonOperations {
         }
         return objects.toString();
     }
+
+    public static String createAllPlayersJsonString(String allPlayersJson) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_TYPE, Constants.ConnectionTypes.TYPE_GET_ALL_PLAYERS);
+        jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_CODE, Constants.ResponseCodes.RESPONSE_SUCCESS);
+        jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_MSG, allPlayersJson);
+        return jsonObject.toString();
+    }
 }
