@@ -220,7 +220,10 @@ public class DatabaseHelper {
 
         Statement statement = mConnection.createStatement();
 
-        ResultSet resultSet = statement.executeQuery("select * from " + PLAYERS_TABLE_NAME);
+        ResultSet resultSet = statement.executeQuery("select * from "
+                + PLAYERS_TABLE_NAME
+                + " order by " + PLAYERS_TABLE_COLUMN_STATUS + " desc "
+        );
 
         ArrayList<Player> players = new ArrayList<>();
 
@@ -235,6 +238,10 @@ public class DatabaseHelper {
         }
 
         return players;
+    }
+
+    public static int getPlayerStatus(String email) throws SQLException {
+        return getPlayerByEmail(email).status;
     }
 
     /*======================================================================================================*/

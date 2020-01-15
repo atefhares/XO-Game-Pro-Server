@@ -107,4 +107,12 @@ public class JsonOperations {
         jsonObject.put(Constants.JsonKeys.KEY_USER_EMAIL, email);
         return jsonObject.toString();
     }
+
+    public static String getInvitationErrorResponse(String errorMsg) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_TYPE, Constants.ConnectionTypes.TYPE_SEND_INVITATION);
+        jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_CODE, Constants.ResponseCodes.RESPONSE_ERROR);
+        jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_MSG, errorMsg);
+        return jsonObject.toString();
+    }
 }

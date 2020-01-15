@@ -97,7 +97,7 @@ public final class Client extends Thread {
     private void handleSendInvitationRequest(String jsonStr) {
         try {
             String otherPlayerEmail = JsonOperations.getOtherPlayerEmail(jsonStr);
-            GameServer.sendToOtherClient(otherPlayerEmail, JsonOperations.getInvitationJson(mPlayer.email));
+            GameServer.sendToOtherClient(mPlayer.email, otherPlayerEmail);
         } catch (IOException e) {
             e.printStackTrace();
         }
