@@ -95,6 +95,26 @@ public final class Client extends Thread {
             case Constants.ConnectionTypes.TYPE_INVITATION_RESULT:
                 handleSendInvitationResponse(jsonStr);
                 break;
+
+            case Constants.ConnectionTypes.TYPE_GAME:
+                handleGameRequest(jsonStr);
+                break;
+        }
+    }
+
+    private void handleGameRequest(String jsonStr) {
+        try {
+            String otherPlayerEmail = JsonOperations.getOtherPlayerEmail(jsonStr);
+            int cord = JsonOperations.getGameCord(jsonStr);
+            GuiLogger.log("[handleGameRequest] otherPlayerEmail: " + otherPlayerEmail);
+            GuiLogger.log("[handleGameRequest] cord: " + cord);
+
+            GameServer.sendToOtherClient(
+                    otherPlayerEmail,
+                    JsonOperations.getGameCommunicationJson(mPlayer.email, cord)
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -105,7 +125,7 @@ public final class Client extends Thread {
                     otherPlayerEmail,
                     JsonOperations.getInvitationResponseJson(mPlayer.email, JsonOperations.parseInvitationResult(jsonStr))
             );
-        } catch (IOException | SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

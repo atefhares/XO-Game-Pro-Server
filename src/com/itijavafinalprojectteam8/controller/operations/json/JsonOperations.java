@@ -103,7 +103,8 @@ public class JsonOperations {
     public static String getSendInvitationJson(String email) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_TYPE, Constants.ConnectionTypes.TYPE_SEND_INVITATION);
-        jsonObject.put(Constants.JsonKeys.KEY_USER_EMAIL, email);
+        jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_CODE, Constants.ResponseCodes.RESPONSE_SUCCESS);
+        jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_MSG, email);
         return jsonObject.toString();
     }
 
@@ -118,13 +119,31 @@ public class JsonOperations {
     public static String getInvitationResponseJson(String email, boolean result) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_TYPE, Constants.ConnectionTypes.TYPE_INVITATION_RESULT);
-        jsonObject.put(Constants.JsonKeys.KEY_USER_EMAIL, email);
-        jsonObject.put(Constants.JsonKeys.KEY_INVITATION_RESULT, result);
+        jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_CODE, Constants.ResponseCodes.RESPONSE_SUCCESS);
+
+        JSONObject jsonObject1 = new JSONObject();
+        jsonObject1.put(Constants.JsonKeys.KEY_USER_EMAIL, email);
+        jsonObject1.put(Constants.JsonKeys.KEY_INVITATION_RESULT, result);
+        jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_MSG, jsonObject1);
+
         return jsonObject.toString();
     }
 
     public static boolean parseInvitationResult(String jsonString) {
         JSONObject jsonObject = new JSONObject(jsonString);
         return jsonObject.getBoolean(Constants.JsonKeys.KEY_INVITATION_RESULT);
+    }
+
+    public static int getGameCord(String jsonStr) {
+        JSONObject jsonObject = new JSONObject(jsonStr);
+        return jsonObject.optInt(Constants.JsonKeys.KEY_GAME_CORD);
+    }
+
+    public static String getGameCommunicationJson(String email, int cord) {
+        JSONObject object = new JSONObject();
+        object.put(Constants.JsonKeys.KEY_RESPONSE_TYPE, Constants.ConnectionTypes.TYPE_GAME);
+        //object.put(Constants.JsonKeys.KEY_USER_EMAIL, email);
+        object.put(Constants.JsonKeys.KEY_GAME_CORD, cord);
+        return object.toString();
     }
 }
