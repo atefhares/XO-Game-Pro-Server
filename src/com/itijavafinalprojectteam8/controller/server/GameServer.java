@@ -193,8 +193,9 @@ public class GameServer {
         }
     }
 
-    public static synchronized void onSomeClientDisconnected() {
+    public static synchronized void onSomeClientDisconnected(String email) {
         try {
+            allClients.remove(email);
             initAllPlayersJson();
         } catch (SQLException e) {
             e.printStackTrace();

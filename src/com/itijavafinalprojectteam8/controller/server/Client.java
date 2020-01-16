@@ -148,7 +148,7 @@ public final class Client extends Thread {
             e.printStackTrace();
         }
 
-        GameServer.onSomeClientDisconnected();
+        GameServer.onSomeClientDisconnected(mPlayer.email);
 
         mIsShutdownCalled.set(true);
 
