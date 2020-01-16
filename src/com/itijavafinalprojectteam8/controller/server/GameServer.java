@@ -202,14 +202,7 @@ public class GameServer {
         }
     }
 
-    public static void sendToOtherClient(String requesterEmail, String otherPlayerEmail) throws IOException, SQLException {
-        int otherPlayerStatus = DatabaseHelper.getPlayerStatus(otherPlayerEmail);
-        if (otherPlayerStatus == Constants.PlayerStatus.ONLINE_NOT_IN_GAME) {
-            allClients.get(otherPlayerEmail).send(JsonOperations.getInvitationJson(requesterEmail));
-        } else if (otherPlayerStatus == Constants.PlayerStatus.ONLINE_IN_GAME) {
-            allClients.get(requesterEmail).send(JsonOperations.getInvitationErrorResponse(otherPlayerEmail + " is in another game"));
-        } else {
-            allClients.get(requesterEmail).send(JsonOperations.getInvitationErrorResponse(otherPlayerEmail + " is in offline!"));
-        }
+    public static void sendToOtherClient(String otherPlayerEmail, String msg) throws IOException, SQLException {
+        allClients.get(otherPlayerEmail).send(msg);
     }
 }

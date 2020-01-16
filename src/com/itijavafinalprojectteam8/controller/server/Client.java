@@ -91,13 +91,39 @@ public final class Client extends Thread {
             case Constants.ConnectionTypes.TYPE_SEND_INVITATION:
                 handleSendInvitationRequest(jsonStr);
                 break;
+
+            case Constants.ConnectionTypes.TYPE_INVITATION_RESULT:
+                handleSendInvitationResponse(jsonStr);
+                break;
+        }
+    }
+
+    private void handleSendInvitationResponse(String jsonStr) {
+        try {
+            String otherPlayerEmail = JsonOperations.getOtherPlayerEmail(jsonStr);
+            GameServer.sendToOtherClient(
+                    otherPlayerEmail,
+                    JsonOperations.getInvitationResponseJson(mPlayer.email, JsonOperations.parseInvitationResult(jsonStr))
+            );
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
         }
     }
 
     private void handleSendInvitationRequest(String jsonStr) {
         try {
             String otherPlayerEmail = JsonOperations.getOtherPlayerEmail(jsonStr);
-            GameServer.sendToOtherClient(mPlayer.email, otherPlayerEmail);
+
+            int otherPlayerStatus = DatabaseHelper.getPlayerStatus(otherPlayerEmail);
+
+            if (otherPlayerStatus == Constants.PlayerStatus.ONLINE_NOT_IN_GAME) {
+                GameServer.sendToOtherClient(otherPlayerEmail, JsonOperations.getSendInvitationJson(mPlayer.email));
+            } else if (otherPlayerStatus == Constants.PlayerStatus.ONLINE_IN_GAME) {
+                send(JsonOperations.getSendInvitationError("player is in another game"));
+            } else {
+                send(JsonOperations.getSendInvitationError("player is in offline"));
+            }
+
         } catch (IOException | SQLException e) {
             e.printStackTrace();
         }

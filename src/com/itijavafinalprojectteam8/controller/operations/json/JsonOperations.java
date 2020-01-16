@@ -40,14 +40,13 @@ public class JsonOperations {
         return jsonObject.toString();
     }
 
-    private static String getPlayerJson(Player player) {
+    private static JSONObject getPlayerJson(Player player) {
         JSONObject playerJson = new JSONObject();
-        playerJson.put("id", player.id);
-        playerJson.put("email", player.email);
-        playerJson.put("name", player.name);
-        playerJson.put("status", player.status);
-        playerJson.put("points", player.points);
-        return playerJson.toString();
+        playerJson.put(Constants.JsonKeys.KEY_USER_EMAIL, player.email);
+        playerJson.put(Constants.JsonKeys.KEY_USER_NAME, player.name);
+        playerJson.put(Constants.JsonKeys.KEY_USER_STATUS, player.status);
+        playerJson.put(Constants.JsonKeys.KEY_USER_POINTS, player.points);
+        return playerJson;
     }
 
     public static String getSignUpErrorResponse(String errorMsg) {
@@ -101,18 +100,31 @@ public class JsonOperations {
         return jsonObject.optString(Constants.JsonKeys.KEY_USER_EMAIL);
     }
 
-    public static String getInvitationJson(String email) {
+    public static String getSendInvitationJson(String email) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_TYPE, Constants.ConnectionTypes.TYPE_SEND_INVITATION);
         jsonObject.put(Constants.JsonKeys.KEY_USER_EMAIL, email);
         return jsonObject.toString();
     }
 
-    public static String getInvitationErrorResponse(String errorMsg) {
+    public static String getSendInvitationError(String errorMsg) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_TYPE, Constants.ConnectionTypes.TYPE_SEND_INVITATION);
         jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_CODE, Constants.ResponseCodes.RESPONSE_ERROR);
         jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_MSG, errorMsg);
         return jsonObject.toString();
+    }
+
+    public static String getInvitationResponseJson(String email, boolean result) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_TYPE, Constants.ConnectionTypes.TYPE_INVITATION_RESULT);
+        jsonObject.put(Constants.JsonKeys.KEY_USER_EMAIL, email);
+        jsonObject.put(Constants.JsonKeys.KEY_INVITATION_RESULT, result);
+        return jsonObject.toString();
+    }
+
+    public static boolean parseInvitationResult(String jsonString) {
+        JSONObject jsonObject = new JSONObject(jsonString);
+        return jsonObject.getBoolean(Constants.JsonKeys.KEY_INVITATION_RESULT);
     }
 }
