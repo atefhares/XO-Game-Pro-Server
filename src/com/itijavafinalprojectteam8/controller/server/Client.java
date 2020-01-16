@@ -98,7 +98,7 @@ public final class Client extends Thread {
         try {
             String otherPlayerEmail = JsonOperations.getOtherPlayerEmail(jsonStr);
             GameServer.sendToOtherClient(mPlayer.email, otherPlayerEmail);
-        } catch (IOException e) {
+        } catch (IOException | SQLException e) {
             e.printStackTrace();
         }
     }
