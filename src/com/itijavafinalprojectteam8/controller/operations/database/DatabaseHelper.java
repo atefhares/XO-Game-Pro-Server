@@ -79,7 +79,7 @@ public class DatabaseHelper {
         GuiLogger.log("Attempt to create table: " + PLAYERS_TABLE_NAME);
 
         Statement statement = mConnection.createStatement();
-        statement.executeUpdate("DROP TABLE  IF EXISTS " + GAMES_TABLE_NAME);
+        //statement.executeUpdate("DROP TABLE  IF EXISTS " + GAMES_TABLE_NAME);
 
         createPlayersTable(statement);
         createGamesTable(statement);
