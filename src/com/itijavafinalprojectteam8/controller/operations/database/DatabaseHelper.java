@@ -3,6 +3,7 @@ package com.itijavafinalprojectteam8.controller.operations.database;
 
 
 import com.itijavafinalprojectteam8.controller.operations.log.GuiLogger;
+import com.itijavafinalprojectteam8.model.Game;
 import com.itijavafinalprojectteam8.model.Player;
 import com.itijavafinalprojectteam8.others.Constants;
 
@@ -78,6 +79,7 @@ public class DatabaseHelper {
         GuiLogger.log("Attempt to create table: " + PLAYERS_TABLE_NAME);
 
         Statement statement = mConnection.createStatement();
+        statement.executeUpdate("DROP TABLE  IF EXISTS " + GAMES_TABLE_NAME);
 
         createPlayersTable(statement);
         createGamesTable(statement);
@@ -90,10 +92,10 @@ public class DatabaseHelper {
                         + GAMES_TABLE_COLUMN_ID + " INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
                         + GAMES_TABLE_COLUMN_PLAYER1_ID + " INT NOT NULL, "
                         + GAMES_TABLE_COLUMN_PLAYER2_ID + " INT NOT NULL, "
-                        + GAMES_TABLE_COLUMN_WINNER_ID + " INT  NOT NULL, "
-                        + GAMES_TABLE_COLUMN_START_DATE + " DATE NOT NULL, "
-                        + GAMES_TABLE_COLUMN_END_DATE + " DATE NOT NULL, "
-                        + GAMES_TABLE_COLUMN_STATUS + " VARCHAR(255) NOT NULL, "
+                        + GAMES_TABLE_COLUMN_WINNER_ID + " INT, "
+                        + GAMES_TABLE_COLUMN_START_DATE + " DATE, "
+                        + GAMES_TABLE_COLUMN_END_DATE + " DATE, "
+                        + GAMES_TABLE_COLUMN_STATUS + " VARCHAR(255), "
                         + "FOREIGN KEY (" + GAMES_TABLE_COLUMN_PLAYER1_ID + ") REFERENCES " + PLAYERS_TABLE_NAME + "(" + PLAYERS_TABLE_COLUMN_ID + "), "
                         + "FOREIGN KEY (" + GAMES_TABLE_COLUMN_PLAYER2_ID + ") REFERENCES " + PLAYERS_TABLE_NAME + "(" + PLAYERS_TABLE_COLUMN_ID + "), "
                         + "FOREIGN KEY (" + GAMES_TABLE_COLUMN_WINNER_ID + ") REFERENCES " + PLAYERS_TABLE_NAME + "(" + PLAYERS_TABLE_COLUMN_ID + ") "
@@ -172,6 +174,20 @@ public class DatabaseHelper {
         GuiLogger.log("[updatePlayerStatus] result: " + result);
     }
 
+    public static void updatePlayerPoints(String email) throws SQLException {
+        if (mConnection == null)
+            throw new NullPointerException("No database connection found");
+
+        Statement statement = mConnection.createStatement();
+        int result = statement.executeUpdate("UPDATE " + PLAYERS_TABLE_NAME
+                + " SET "
+                + PLAYERS_TABLE_COLUMN_POINTS + "=" + PLAYERS_TABLE_COLUMN_POINTS + "+" + 10
+                + " WHERE " + PLAYERS_TABLE_COLUMN_EMAIL + "=\"" + email + "\""
+        );
+
+        GuiLogger.log("[updatePlayerPoints] result: " + result);
+    }
+
     public static void setAllPlayersOffline() throws SQLException {
         if (mConnection == null)
             throw new NullPointerException("No database connection found");
@@ -242,6 +258,27 @@ public class DatabaseHelper {
 
     public static int getPlayerStatus(String email) throws SQLException {
         return getPlayerByEmail(email).status;
+    }
+
+    public static void insertGame(Game game) throws SQLException {
+        if (mConnection == null)
+            throw new NullPointerException("No database connection found");
+
+
+        Statement statement = mConnection.createStatement();
+        int result = statement.executeUpdate("INSERT INTO " + GAMES_TABLE_NAME
+                + " VALUES ("
+                + "null, "
+                + getPlayerByEmail(game.player1Email).id + ", "
+                + getPlayerByEmail(game.player2Email).id + ", "
+                + "null, "
+                + "null, "
+                + "null, "
+                + game.gameState
+                + ")"
+        );
+
+        GuiLogger.log("[insertGame] result: " + result);
     }
 
     /*======================================================================================================*/

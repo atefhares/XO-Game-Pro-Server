@@ -146,4 +146,15 @@ public class JsonOperations {
         object.put(Constants.JsonKeys.KEY_GAME_CORD, cord);
         return object.toString();
     }
+
+    public static String parseGameStateStr(String jsonStr) {
+        JSONObject object = new JSONObject(jsonStr);
+        return object.getJSONObject(Constants.JsonKeys.KEY_GAME_STATE).toString();
+    }
+
+    public static String createGamePausedJson() {
+        JSONObject object = new JSONObject();
+        object.put(Constants.JsonKeys.KEY_RESPONSE_TYPE, Constants.ConnectionTypes.TYPE_PAUSE_GAME);
+        return object.toString();
+    }
 }

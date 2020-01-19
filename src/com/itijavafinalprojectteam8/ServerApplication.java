@@ -23,6 +23,10 @@ public class ServerApplication extends Application {
                     FXMLLoader.load(getClass().getResource("/com/itijavafinalprojectteam8/view/servergui.fxml"))
             );
 
+        stage.setOnCloseRequest(windowEvent -> {
+            System.exit(0);
+        });
+
         stage.setScene(mScene);
         stage.show();
     }

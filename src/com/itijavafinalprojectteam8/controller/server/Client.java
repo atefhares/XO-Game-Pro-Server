@@ -4,6 +4,7 @@ import com.itijavafinalprojectteam8.controller.operations.Props;
 import com.itijavafinalprojectteam8.controller.operations.database.DatabaseHelper;
 import com.itijavafinalprojectteam8.controller.operations.json.JsonOperations;
 import com.itijavafinalprojectteam8.controller.operations.log.GuiLogger;
+import com.itijavafinalprojectteam8.model.Game;
 import com.itijavafinalprojectteam8.model.Player;
 import com.itijavafinalprojectteam8.others.Constants;
 
@@ -99,6 +100,44 @@ public final class Client extends Thread {
             case Constants.ConnectionTypes.TYPE_GAME:
                 handleGameRequest(jsonStr);
                 break;
+
+            case Constants.ConnectionTypes.TYPE_UPDATE_PLAYER_POINTS:
+                handleUpdatePlayerPoints(jsonStr);
+                break;
+
+            case Constants.ConnectionTypes.TYPE_PAUSE_GAME:
+                handlePauseGame(jsonStr);
+                break;
+        }
+    }
+
+    private void handlePauseGame(String jsonStr) {
+        String otherPlayerEmail = JsonOperations.getOtherPlayerEmail(jsonStr);
+        String gameState = JsonOperations.parseGameStateStr(jsonStr);
+        Game game = new Game();
+        game.player1Email = mPlayer.email;
+        game.player2Email = otherPlayerEmail;
+        game.gameState = gameState;
+
+        try {
+            DatabaseHelper.insertGame(game);
+
+            GameServer.sendToOtherClient(
+                    otherPlayerEmail,
+                    JsonOperations.createGamePausedJson()
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleUpdatePlayerPoints(String jsonStr) {
+        try {
+            DatabaseHelper.updatePlayerPoints(mPlayer.email);
+
+            GameServer.initAllPlayersJson();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

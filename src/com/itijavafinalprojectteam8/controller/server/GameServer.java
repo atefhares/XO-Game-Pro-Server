@@ -178,7 +178,7 @@ public class GameServer {
         }
     }
 
-    private static void initAllPlayersJson() throws SQLException {
+    public static void initAllPlayersJson() throws SQLException {
         Props.allPlayersJson.setValue(JsonOperations.getPlayersListJson(DatabaseHelper.getAllPlayers()));
         sendAllPlayersJsonToAllConnectedClients();
     }
