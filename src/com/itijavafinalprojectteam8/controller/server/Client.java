@@ -108,15 +108,30 @@ public final class Client extends Thread {
             case Constants.ConnectionTypes.TYPE_PAUSE_GAME:
                 handlePauseGame(jsonStr);
                 break;
+            case Constants.ConnectionTypes.TYPE_GAME_OVER:
+                handleGameOver(jsonStr);
+                break;
+        }
+    }
+
+    private void handleGameOver(String jsonStr) {
+        String otherPlayerEmail = JsonOperations.getOtherPlayerEmail(jsonStr);
+
+        try {
+            DatabaseHelper.updatePlayerStatus(otherPlayerEmail, Constants.PlayerStatus.ONLINE_NOT_IN_GAME);
+            DatabaseHelper.updatePlayerStatus(mPlayer.email, Constants.PlayerStatus.ONLINE_NOT_IN_GAME);
+            DatabaseHelper.deleteGameIfExists(mPlayer.email, otherPlayerEmail);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
     private void handlePauseGame(String jsonStr) {
+        GuiLogger.log("[handlePauseGame] jsonStr: " + jsonStr);
         String otherPlayerEmail = JsonOperations.getOtherPlayerEmail(jsonStr);
         String gameState = JsonOperations.parseGameStateStr(jsonStr);
         Game game = new Game();
-        game.player1Email = mPlayer.email;
-        game.player2Email = otherPlayerEmail;
+
         game.gameState = gameState;
 
         try {
@@ -134,7 +149,6 @@ public final class Client extends Thread {
     private void handleUpdatePlayerPoints(String jsonStr) {
         try {
             DatabaseHelper.updatePlayerPoints(mPlayer.email);
-
             GameServer.initAllPlayersJson();
         } catch (Exception e) {
             e.printStackTrace();
@@ -160,10 +174,30 @@ public final class Client extends Thread {
     private void handleSendInvitationResponse(String jsonStr) {
         try {
             String otherPlayerEmail = JsonOperations.getOtherPlayerEmail(jsonStr);
+            boolean invitationResult = JsonOperations.parseInvitationResult(jsonStr);
+
+            if (invitationResult) {
+                DatabaseHelper.updatePlayerStatus(mPlayer.email, Constants.PlayerStatus.ONLINE_IN_GAME);
+                DatabaseHelper.updatePlayerStatus(otherPlayerEmail, Constants.PlayerStatus.ONLINE_IN_GAME);
+                GameServer.initAllPlayersJson();
+            }
+
             GameServer.sendToOtherClient(
                     otherPlayerEmail,
-                    JsonOperations.getInvitationResponseJson(mPlayer.email, JsonOperations.parseInvitationResult(jsonStr))
+                    JsonOperations.getInvitationResponseJson(mPlayer.email, invitationResult)
             );
+
+
+            Game game = DatabaseHelper.getGame(mPlayer.email, otherPlayerEmail);
+            if (invitationResult && game != null) {
+                GuiLogger.log("game: " + game.toString());
+                send(JsonOperations.createThereIsOldGameJson(otherPlayerEmail, game.gameState));
+                GameServer.sendToOtherClient(
+                        otherPlayerEmail,
+                        JsonOperations.createThereIsOldGameJson(mPlayer.email, game.gameState)
+                );
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -172,7 +206,6 @@ public final class Client extends Thread {
     private void handleSendInvitationRequest(String jsonStr) {
         try {
             String otherPlayerEmail = JsonOperations.getOtherPlayerEmail(jsonStr);
-
             int otherPlayerStatus = DatabaseHelper.getPlayerStatus(otherPlayerEmail);
 
             if (otherPlayerStatus == Constants.PlayerStatus.ONLINE_NOT_IN_GAME) {

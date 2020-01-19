@@ -149,12 +149,20 @@ public class JsonOperations {
 
     public static String parseGameStateStr(String jsonStr) {
         JSONObject object = new JSONObject(jsonStr);
-        return object.getJSONObject(Constants.JsonKeys.KEY_GAME_STATE).toString();
+        return object.getString(Constants.JsonKeys.KEY_GAME_STATE);
     }
 
     public static String createGamePausedJson() {
         JSONObject object = new JSONObject();
         object.put(Constants.JsonKeys.KEY_RESPONSE_TYPE, Constants.ConnectionTypes.TYPE_PAUSE_GAME);
+        return object.toString();
+    }
+
+    public static String createThereIsOldGameJson(String otherPlayerEmail, String gameState) {
+        JSONObject object = new JSONObject();
+        object.put(Constants.JsonKeys.KEY_RESPONSE_TYPE, Constants.ConnectionTypes.TYPE_RESUME_GAME);
+        object.put(Constants.JsonKeys.KEY_USER_EMAIL, otherPlayerEmail);
+        object.put(Constants.JsonKeys.KEY_GAME_STATE, gameState);
         return object.toString();
     }
 }

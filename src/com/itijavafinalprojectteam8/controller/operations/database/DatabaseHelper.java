@@ -36,12 +36,8 @@ public class DatabaseHelper {
 
     private static final String GAMES_TABLE_NAME = "games";
     private static final String GAMES_TABLE_COLUMN_ID = "id";
-    private static final String GAMES_TABLE_COLUMN_PLAYER1_ID = "player1_id";
-    private static final String GAMES_TABLE_COLUMN_PLAYER2_ID = "player2_id";
-
-    private static final String GAMES_TABLE_COLUMN_WINNER_ID = "winner_id";
-    private static final String GAMES_TABLE_COLUMN_START_DATE = "start_date";
-    private static final String GAMES_TABLE_COLUMN_END_DATE = "end_date";
+    private static final String GAMES_TABLE_COLUMN_PLAYER1_EMAIL = "player1_email";
+    private static final String GAMES_TABLE_COLUMN_PLAYER2_EMAIL = "player2_email";
     private static final String GAMES_TABLE_COLUMN_STATUS = "game_status";
     /*======================================================================================================*/
 
@@ -79,7 +75,7 @@ public class DatabaseHelper {
         GuiLogger.log("Attempt to create table: " + PLAYERS_TABLE_NAME);
 
         Statement statement = mConnection.createStatement();
-        //statement.executeUpdate("DROP TABLE  IF EXISTS " + GAMES_TABLE_NAME);
+        //  statement.executeUpdate("DROP TABLE  IF EXISTS " + GAMES_TABLE_NAME);
 
         createPlayersTable(statement);
         createGamesTable(statement);
@@ -90,15 +86,9 @@ public class DatabaseHelper {
                 "CREATE TABLE IF NOT EXISTS " + GAMES_TABLE_NAME
                         + "("
                         + GAMES_TABLE_COLUMN_ID + " INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
-                        + GAMES_TABLE_COLUMN_PLAYER1_ID + " INT NOT NULL, "
-                        + GAMES_TABLE_COLUMN_PLAYER2_ID + " INT NOT NULL, "
-                        + GAMES_TABLE_COLUMN_WINNER_ID + " INT, "
-                        + GAMES_TABLE_COLUMN_START_DATE + " DATE, "
-                        + GAMES_TABLE_COLUMN_END_DATE + " DATE, "
-                        + GAMES_TABLE_COLUMN_STATUS + " VARCHAR(255), "
-                        + "FOREIGN KEY (" + GAMES_TABLE_COLUMN_PLAYER1_ID + ") REFERENCES " + PLAYERS_TABLE_NAME + "(" + PLAYERS_TABLE_COLUMN_ID + "), "
-                        + "FOREIGN KEY (" + GAMES_TABLE_COLUMN_PLAYER2_ID + ") REFERENCES " + PLAYERS_TABLE_NAME + "(" + PLAYERS_TABLE_COLUMN_ID + "), "
-                        + "FOREIGN KEY (" + GAMES_TABLE_COLUMN_WINNER_ID + ") REFERENCES " + PLAYERS_TABLE_NAME + "(" + PLAYERS_TABLE_COLUMN_ID + ") "
+                        + GAMES_TABLE_COLUMN_PLAYER1_EMAIL + " VARCHAR(255) NOT NULL, "
+                        + GAMES_TABLE_COLUMN_PLAYER2_EMAIL + " VARCHAR(255) NOT NULL, "
+                        + GAMES_TABLE_COLUMN_STATUS + " VARCHAR(255)"
                         + ")"
         );
         GuiLogger.log("[createGamesTable] result: " + result);
@@ -264,21 +254,70 @@ public class DatabaseHelper {
         if (mConnection == null)
             throw new NullPointerException("No database connection found");
 
-
+        GuiLogger.log("[] game: " + game.toString());
         Statement statement = mConnection.createStatement();
         int result = statement.executeUpdate("INSERT INTO " + GAMES_TABLE_NAME
+                + "(" + GAMES_TABLE_COLUMN_PLAYER1_EMAIL + ","
+                + GAMES_TABLE_COLUMN_PLAYER2_EMAIL + ","
+                + GAMES_TABLE_COLUMN_STATUS
+                + ")"
                 + " VALUES ("
-                + "null, "
-                + getPlayerByEmail(game.player1Email).id + ", "
-                + getPlayerByEmail(game.player2Email).id + ", "
-                + "null, "
-                + "null, "
-                + "null, "
-                + game.gameState
+                + "\"" + game.player1Email + "\"" + ", "
+                + "\"" + game.player2Email + "\"" + ", "
+                + "\"" + game.gameState + "\""
                 + ")"
         );
 
         GuiLogger.log("[insertGame] result: " + result);
+    }
+
+    public static void deleteGameIfExists(String email, String otherPlayerEmail) throws SQLException {
+        if (mConnection == null)
+            throw new NullPointerException("No database connection found");
+
+
+        Statement statement = mConnection.createStatement();
+        int result = statement.executeUpdate("DELETE FROM " + GAMES_TABLE_NAME
+                + " WHERE (" + GAMES_TABLE_COLUMN_PLAYER1_EMAIL + "= \"" + email + "\""
+                + " AND " + GAMES_TABLE_COLUMN_PLAYER2_EMAIL + "= \"" + otherPlayerEmail + "\""
+                + ") OR (" + GAMES_TABLE_COLUMN_PLAYER1_EMAIL + "= \"" + otherPlayerEmail + "\""
+                + " AND " + GAMES_TABLE_COLUMN_PLAYER2_EMAIL + "= \"" + email + "\""
+                + ")"
+        );
+
+        GuiLogger.log("[deleteGameIfExists] result: " + result);
+    }
+
+    public static Game getGame(String email, String otherPlayerEmail) throws SQLException {
+        if (mConnection == null)
+            throw new NullPointerException("No database connection found");
+
+
+        Statement statement = mConnection.createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM " + GAMES_TABLE_NAME
+                + " WHERE (" + GAMES_TABLE_COLUMN_PLAYER1_EMAIL + "= \"" + email + "\""
+                + " AND " + GAMES_TABLE_COLUMN_PLAYER2_EMAIL + "= \"" + otherPlayerEmail + "\""
+                + ") OR (" + GAMES_TABLE_COLUMN_PLAYER1_EMAIL + "= \"" + otherPlayerEmail + "\""
+                + " AND " + GAMES_TABLE_COLUMN_PLAYER2_EMAIL + "= \"" + email + "\""
+                + ")"
+                + " ORDER BY " + GAMES_TABLE_COLUMN_ID + " DESC "
+                + " LIMIT 1"
+        );
+
+        if (resultSet.next()) {
+            Game game = new Game();
+            game.id = resultSet.getInt(GAMES_TABLE_COLUMN_ID);
+            game.player1Email = resultSet.getString(GAMES_TABLE_COLUMN_PLAYER1_EMAIL);
+            game.player2Email = resultSet.getString(GAMES_TABLE_COLUMN_PLAYER2_EMAIL);
+            game.gameState = resultSet.getString(GAMES_TABLE_COLUMN_STATUS);
+
+            GuiLogger.log("[getGame] result: " + resultSet.toString());
+
+            return game;
+        }
+
+
+        return null;
     }
 
     /*======================================================================================================*/
