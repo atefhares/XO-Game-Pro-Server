@@ -131,11 +131,12 @@ public class GameServer {
             Player player = DatabaseHelper.getPlayerByEmail(data.get(1));
             client.setPlayer(player);
             client.start();
-            allClients.put(player.email, client);
             client.send(JsonOperations.getSignUpConfirmationResponse(player));
             DatabaseHelper.updatePlayerStatus(player.email, Constants.PlayerStatus.ONLINE_NOT_IN_GAME);
 
-            handleOnNewClientConnected();
+            handleOnNewClientConnected(player);
+
+            allClients.put(player.email, client);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -152,16 +153,25 @@ public class GameServer {
             Client client = new Client();
             client.init(clientSocket);
 
+            if (allClients.get(data.get(0)) != null) {
+                client.send(JsonOperations.getSignInErrorResponse("You already logged in another client!"));
+                client.shutdown();
+                client = null;
+                return;
+            }
+
+
             if (DatabaseHelper.isUserCredentialsCorrect(data.get(0), data.get(1))) {
                 Player player = DatabaseHelper.getPlayerByEmail(data.get(0));
                 GuiLogger.log("created player: " + player.toString());
                 client.setPlayer(player);
                 client.start();
-                allClients.put(player.email, client);
                 client.send(JsonOperations.getSignInConfirmationResponse(player));
                 DatabaseHelper.updatePlayerStatus(player.email, Constants.PlayerStatus.ONLINE_NOT_IN_GAME);
 
-                handleOnNewClientConnected();
+                handleOnNewClientConnected(player);
+
+                allClients.put(player.email, client);
             } else {
                 client.send(JsonOperations.getSignInErrorResponse("Wrong user name or pass"));
                 client.shutdown();
@@ -172,10 +182,11 @@ public class GameServer {
         }
     }
 
-    private static void handleOnNewClientConnected() {
+    private static void handleOnNewClientConnected(Player player) {
         //initial players json str
         try {
             initAllPlayersJson();
+            sendNewlyConnectedPlayerJsonToAllConnectedClients(player);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -195,6 +206,17 @@ public class GameServer {
             }
         }
     }
+
+    private static void sendNewlyConnectedPlayerJsonToAllConnectedClients(Player player) {
+        for (Map.Entry<String, Client> entry : allClients.entrySet()) {
+            try {
+                entry.getValue().send(JsonOperations.createNewlyConnectedPlayerJsonString(player));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     public static synchronized void onSomeClientDisconnected(String email) {
         try {

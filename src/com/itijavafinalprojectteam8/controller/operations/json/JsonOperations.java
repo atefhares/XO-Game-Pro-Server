@@ -165,4 +165,12 @@ public class JsonOperations {
         object.put(Constants.JsonKeys.KEY_GAME_STATE, gameState);
         return object.toString();
     }
+
+    public static String createNewlyConnectedPlayerJsonString(Player player) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_TYPE, Constants.ConnectionTypes.TYPE_PLAYER_IS_ONLINE);
+        jsonObject.put(Constants.JsonKeys.KEY_USER_NAME, player.name);
+        jsonObject.put(Constants.JsonKeys.KEY_USER_EMAIL, player.email);
+        return jsonObject.toString();
+    }
 }
