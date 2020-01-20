@@ -6,7 +6,6 @@ import com.itijavafinalprojectteam8.controller.server.GameServer;
 import com.itijavafinalprojectteam8.interfaces.View;
 import com.itijavafinalprojectteam8.others.Constants;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -14,15 +13,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -94,7 +90,6 @@ public class GuiController implements Initializable, View {
         });
     }
 
-
     public void updatePlayersView(String jsonString) {
         playersGrid.getChildren().clear();
 
@@ -122,50 +117,6 @@ public class GuiController implements Initializable, View {
             playersGrid.add(circle, 0, i);
             playersGrid.add(playerName, 1, i);
             playersGrid.add(playerPoints, 2, i);
-
-        }
-    }
-
-    public class TableRow {
-
-        private SimpleStringProperty playersCol;
-        private ImageView imagesCol;
-        private SimpleStringProperty pointsCol;
-        private File onlineImageFile = new File("res/online.jpg");
-        private Image onlineImage = new Image(onlineImageFile.toURI().toString());
-
-        private File offlineImageFile = new File("res/online.jpg");
-        private Image offlineImage = new Image(offlineImageFile.toURI().toString());
-
-
-        public TableRow(int status, String playersCol, int points) {
-            this.playersCol = new SimpleStringProperty(playersCol);
-
-            if (status == Constants.PlayerStatus.OFFLINE) {
-                this.imagesCol = new ImageView(offlineImage);
-            } else {
-                this.imagesCol = new ImageView(onlineImage);
-            }
-            this.pointsCol = new SimpleStringProperty(points + "");
-
-        }
-
-
-        public String getPointsCol() {
-            return pointsCol.get();
-
-        }
-
-        public String getPlayersCol() {
-            return playersCol.get();
-        }
-
-        public ImageView getImagesCol() {
-            return imagesCol;
-        }
-
-        public void setImagesCol(ImageView imagesCol) {
-            this.imagesCol = imagesCol;
 
         }
     }
