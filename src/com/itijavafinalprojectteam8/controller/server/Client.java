@@ -122,6 +122,8 @@ public final class Client extends Thread {
             DatabaseHelper.updatePlayerStatus(otherPlayerEmail, Constants.PlayerStatus.ONLINE_NOT_IN_GAME);
             DatabaseHelper.updatePlayerStatus(mPlayer.email, Constants.PlayerStatus.ONLINE_NOT_IN_GAME);
             DatabaseHelper.deleteGameIfExists(mPlayer.email, otherPlayerEmail);
+
+            GameServer.initAllPlayersJson();
         } catch (SQLException e) {
             e.printStackTrace();
         }
