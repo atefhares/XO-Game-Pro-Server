@@ -69,7 +69,10 @@ public class GameServer {
             if (mGameConnectionsSocket != null) {
                 mGameConnectionsSocket.close();
             }
-        } catch (IOException e) {
+
+            DatabaseHelper.setAllPlayersOffline();
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
