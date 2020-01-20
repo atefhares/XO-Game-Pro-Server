@@ -108,6 +108,7 @@ public final class Client extends Thread {
             case Constants.ConnectionTypes.TYPE_PAUSE_GAME:
                 handlePauseGame(jsonStr);
                 break;
+
             case Constants.ConnectionTypes.TYPE_GAME_OVER:
                 handleGameOver(jsonStr);
                 break;
@@ -130,17 +131,16 @@ public final class Client extends Thread {
         GuiLogger.log("[handlePauseGame] jsonStr: " + jsonStr);
         String otherPlayerEmail = JsonOperations.getOtherPlayerEmail(jsonStr);
         String gameState = JsonOperations.parseGameStateStr(jsonStr);
-        Game game = new Game();
+        GuiLogger.log("[handlePauseGame] gameState: " + gameState);
 
+        Game game = new Game();
+        game.player1Email = mPlayer.email;
+        game.player2Email = otherPlayerEmail;
         game.gameState = gameState;
 
         try {
             DatabaseHelper.insertGame(game);
-
-            GameServer.sendToOtherClient(
-                    otherPlayerEmail,
-                    JsonOperations.createGamePausedJson()
-            );
+            GameServer.sendToOtherClient(otherPlayerEmail, JsonOperations.createGamePausedJson());
         } catch (Exception e) {
             e.printStackTrace();
         }

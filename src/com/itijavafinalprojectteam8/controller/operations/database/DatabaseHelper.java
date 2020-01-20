@@ -254,7 +254,11 @@ public class DatabaseHelper {
         if (mConnection == null)
             throw new NullPointerException("No database connection found");
 
-        GuiLogger.log("[] game: " + game.toString());
+        GuiLogger.log("[insertGame] game: " + game.toString());
+        GuiLogger.log("[insertGame] game.player1Email: " + game.player1Email);
+        GuiLogger.log("[insertGame] game.player2Email: " + game.player2Email);
+        GuiLogger.log("[insertGame] game.gameState: " + game.gameState);
+
         Statement statement = mConnection.createStatement();
         int result = statement.executeUpdate("INSERT INTO " + GAMES_TABLE_NAME
                 + "(" + GAMES_TABLE_COLUMN_PLAYER1_EMAIL + ","
@@ -262,9 +266,9 @@ public class DatabaseHelper {
                 + GAMES_TABLE_COLUMN_STATUS
                 + ")"
                 + " VALUES ("
-                + "\"" + game.player1Email + "\"" + ", "
-                + "\"" + game.player2Email + "\"" + ", "
-                + "\"" + game.gameState + "\""
+                + "\'" + game.player1Email + "\'" + ", "
+                + "\'" + game.player2Email + "\'" + ", "
+                + "\'" + game.gameState + "\'"
                 + ")"
         );
 
