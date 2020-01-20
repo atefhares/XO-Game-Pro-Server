@@ -229,7 +229,7 @@ public class DatabaseHelper {
         ResultSet resultSet = statement.executeQuery("select * from "
                 + PLAYERS_TABLE_NAME
                 + " order by " + PLAYERS_TABLE_COLUMN_STATUS + " desc "
-                + " , " + PLAYERS_TABLE_COLUMN_POINTS + " asc "
+                + " , " + PLAYERS_TABLE_COLUMN_POINTS + " desc "
         );
 
         ArrayList<Player> players = new ArrayList<>();
