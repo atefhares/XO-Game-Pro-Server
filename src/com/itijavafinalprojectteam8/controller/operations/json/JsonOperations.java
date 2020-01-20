@@ -173,4 +173,17 @@ public class JsonOperations {
         jsonObject.put(Constants.JsonKeys.KEY_USER_EMAIL, player.email);
         return jsonObject.toString();
     }
+
+    public static String parseChatMessage(String jsonStr) {
+        JSONObject jsonObject = new JSONObject(jsonStr);
+        return jsonObject.getString(Constants.JsonKeys.KEY_CHAT_MSG);
+    }
+
+    public static String createChatMessageJson(String email, String message) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(Constants.JsonKeys.KEY_RESPONSE_TYPE, Constants.ConnectionTypes.TYPE_CHAT);
+        jsonObject.put(Constants.JsonKeys.KEY_USER_NAME, email);
+        jsonObject.put(Constants.JsonKeys.KEY_CHAT_MSG, message);
+        return jsonObject.toString();
+    }
 }

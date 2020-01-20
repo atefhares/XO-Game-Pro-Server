@@ -112,6 +112,20 @@ public final class Client extends Thread {
             case Constants.ConnectionTypes.TYPE_GAME_OVER:
                 handleGameOver(jsonStr);
                 break;
+
+            case Constants.ConnectionTypes.TYPE_CHAT:
+                handleSendChatMessage(jsonStr);
+                break;
+        }
+    }
+
+    private void handleSendChatMessage(String jsonStr) {
+        String message = JsonOperations.parseChatMessage(jsonStr);
+        String email = JsonOperations.getOtherPlayerEmail(jsonStr);
+        try {
+            GameServer.sendToOtherClient(email, JsonOperations.createChatMessageJson(email, message));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
