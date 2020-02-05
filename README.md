@@ -6,7 +6,7 @@ A network based Tic tac toe game, this implementation was done as the java proje
 
 [Client repo](https://github.com/atefhares/XO-Game-Pro-Client) | [Server repo](https://github.com/atefhares/XO-Game-Pro-Server)
 
-![hg](https://github.com/atefhares/XO-Game-Pro-Client/blob/master/out.gif)
+![hg](https://github.com/atefhares/XO-Game-Pro-Server/blob/master/Screenshot%20from%202020-02-05%2002-52-35.png)
 
 # Contents
 
